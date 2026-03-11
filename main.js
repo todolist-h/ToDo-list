@@ -111,5 +111,11 @@ new Vue({
         this.todos = [];
       }
     });
+
+    // 初回訪問時のみ利用規約を表示
+    if (!localStorage.getItem('hasSeenTerms')) {
+      this.showTerms = true;
+      localStorage.setItem('hasSeenTerms', 'true');
+    }
   }
 });
