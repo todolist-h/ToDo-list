@@ -8,7 +8,7 @@ new Vue({
     newDate: '',
     user: null,
     isMenuOpen: false,           // サイドメニューの開閉状態
-    notificationEnabled: true    // 通知スイッチの状態
+    notificationEnabled: false    // 通知スイッチの状態
   },
   methods: {
     // 1. Googleログイン
@@ -111,4 +111,5 @@ new Vue({
     });
   }
 });
+
 
