@@ -8,6 +8,29 @@ new Vue({
     newDate: '',
     user: null
   },
+
+  data: {
+  todos: [],
+  newTodo: '',
+  newDate: '',
+  user: null,
+  isMenuOpen: false,           // メニューの開閉
+  notificationEnabled: true    // 通知のON/OFF
+},
+methods: {
+  toggleNotification() {
+    if (this.notificationEnabled && Notification.permission !== 'granted') {
+      Notification.requestPermission();
+    }
+  },
+  // checkDeadlines の中に条件を追加
+  checkDeadlines() {
+    if (!this.notificationEnabled) return; // 通知オフなら何もしない
+    // ...以前の通知処理
+  },
+  // ... 他のメソッド
+}
+  
   methods: {
     // 1. ログイン
     login() {
@@ -85,5 +108,6 @@ created() {
   });
 }
 });
+
 
 
