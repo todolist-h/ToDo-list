@@ -32,7 +32,12 @@ table { width: 100%; border-collapse: collapse; margin-top: 5px; }
 thead th { border-bottom: 2px solid #0099e4; color: #0099e4; text-align: left; padding: 12px 8px; }
 th, td { padding: 12px 8px; border-bottom: 1px solid #eee; transition: all 0.3s; }
 tbody tr:hover td { background: #f4fbff; }
-tbody tr.done td { background: #fdfdfd; color: #bbb; text-decoration: line-through; }
+/* 「完了」状態の行のスタイル */
+tbody tr.done-item td { 
+    background-color: #e0e0e0 !important; /* 背景を暗く */
+    color: #888 !important;              /* 文字を薄く */
+    text-decoration: line-through;      /* 打ち消し線 */
+}
 
 /* --- ボタン --- */
 button {
@@ -53,3 +58,4 @@ td.button button { background: #e74c3c; }
 /* --- 特殊クラス --- */
 
 .text-danger { color: #e74c3c; font-weight: bold; }
+
