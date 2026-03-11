@@ -100,3 +100,13 @@ td.button button { background: #e74c3c; }
     padding: 3px 8px;
     font-size: 0.75rem;
 }
+
+/* 期限当日・超過の行（未完了のみ適用） */
+tbody tr.danger-item td {
+    background-color: #fff0f0 !important; /* 薄い赤 */
+    color: #d9534f;                     /* 文字も少し赤っぽく */
+    font-weight: bold;
+}
+
+/* 完了済みのスタイルが優先されるように、CSSの順番は done-item の後に書くのがコツです */
+
