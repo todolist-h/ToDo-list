@@ -33,6 +33,9 @@
           <td>{{ item.dueDate }}</td>
           <td><button @click="doChangeState(item)">{{ item.state }}</button></td>
           <td><button @click="doRemove(item)">削除</button></td>
+          <td class="due" :class="{ 'text-danger': item.dueDate && new Date(item.dueDate) <= new Date().setHours(23,59,59,999) && !item.state }">
+  {{ item.dueDate || 'なし' }}
+</td>
         </tr>
       </tbody>
     </table>
@@ -57,3 +60,4 @@
   <script src="./main.js"></script>
 </body>
 </html>
+
