@@ -10,13 +10,14 @@
   <div id="app">
     <h1>ToDoリスト</h1>
     
-    <div v-if="user" class="user-area">
-      <button @click="logout">ログアウト</button>
-    </div>
-    <div v-else class="user-area">
-      <button @click="login">Googleでログイン</button>
-    </div>
+<div v-if="user" class="user-area">
+  <button @click="logout">ログアウト</button>
+</div>
 
+<div v-if="user" class="user-area">
+  <p class="user-info">ログイン中: <strong>{{ user.displayName }}</strong> </p>
+  <button @click="logout">ログアウト</button>
+</div>
     <form class="add-form" @submit.prevent="doAdd">
       <input type="text" id="todo-input" v-model="newTodo" placeholder="タスクを入力">
       <input type="date" id="todo-date" v-model="newDate">
@@ -57,6 +58,7 @@
   <script src="./main.js"></script>
 </body>
 </html>
+
 
 
 
