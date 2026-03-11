@@ -17,6 +17,10 @@
     <button @click="logout" class="logout-button">ログアウト</button>
   </div>
 </div>
+
+<div v-else class="user-area">
+  <button @click="login">Googleでログイン</button>
+</div>
     
     <form class="add-form" @submit.prevent="doAdd">
       <input type="text" id="todo-input" v-model="newTodo" placeholder="タスクを入力">
