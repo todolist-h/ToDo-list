@@ -66,17 +66,24 @@ new Vue({
       db.collection('todos').doc(item.id).update({ state: newState });
     }
   },
-  created() {
-    firebase.auth().onAuthStateChanged(user => {
-      this.user = user;
-      if (user) {
-        db.collection('todos').where('uid', '==', user.uid).onSnapshot(snapshot => {
+// created() の中を以下のように書き換え
+created() {
+  firebase.auth().onAuthStateChanged(user => {
+    this.user = user;
+    if (user) {
+      // 状態(state)で降順（作業中→完了）、期限(dueDate)で昇順（近い順）に並べる
+      db.collection('todos')
+        .where('uid', '==', user.uid)
+        .orderBy('state', 'desc') 
+        .orderBy('dueDate', 'asc')
+        .onSnapshot(snapshot => {
           this.todos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         });
-      } else {
-        this.todos = [];
-      }
-    });
-  }
+    } else {
+      this.todos = [];
+    }
+  });
+}
 });
+
 
