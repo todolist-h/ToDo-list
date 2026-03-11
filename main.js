@@ -40,15 +40,20 @@ new Vue({
     },
 
     // 5. 期限切れタスクをチェックしてブラウザ通知を出す
-    checkDeadlines() {
-      if (!this.notificationEnabled) return; // スイッチがオフなら何もしない
+  checkDeadlines() {
+      if (!this.notificationEnabled) return;
 
       const todayStr = new Date().toISOString().split('T')[0];
+      // 今日の未完了タスクを絞り込む
       const urgentTasks = this.todos.filter(t => t.state !== '完了' && t.dueDate === todayStr);
 
       if (urgentTasks.length > 0 && Notification.permission === 'granted') {
-        new Notification("ToDoリスト", {
-          body: `今日が期限のタスクが ${urgentTasks.length} 件あります！`
+        // タスクの内容（comment）を改行してつなげる
+        const taskList = urgentTasks.map(t => `・${t.comment}`).join('\n');
+        
+        new Notification("今日のToDo", {
+          body: `期限のタスクが ${urgentTasks.length} 件あります！\n\n${taskList}`,
+          icon: "/favicon.ico"
         });
       }
     },
@@ -106,3 +111,4 @@ new Vue({
     });
   }
 });
+
