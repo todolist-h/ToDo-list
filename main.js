@@ -7,8 +7,9 @@ new Vue({
     newTodo: '',
     newDate: '',
     user: null,
-    isMenuOpen: false,           // サイドメニューの開閉状態
-    notificationEnabled: false    // 通知スイッチの状態
+    isMenuOpen: false,
+    // 【修正】localStorageから設定を読み込む（なければ false）
+    notificationEnabled: localStorage.getItem('notify') === 'true'
   },
   methods: {
     // 1. Googleログイン
@@ -22,7 +23,7 @@ new Vue({
       firebase.auth().signOut();
     },
 
-    // 3. 期限が今日以前かチェックする（CSSクラス用）
+    // 3. 期限が今日以前かチェックする
     isUrgent(dueDate) {
       if (!dueDate) return false;
       const today = new Date();
@@ -34,26 +35,26 @@ new Vue({
 
     // 4. 通知スイッチの切り替え処理
     toggleNotification() {
+      // 【修正】設定が変わるたびに localStorage に保存
+      localStorage.setItem('notify', this.notificationEnabled);
+      
       if (this.notificationEnabled && Notification.permission !== 'granted') {
         Notification.requestPermission();
       }
     },
 
     // 5. 期限切れタスクをチェックしてブラウザ通知を出す
-  checkDeadlines() {
+    checkDeadlines() {
       if (!this.notificationEnabled) return;
 
       const todayStr = new Date().toISOString().split('T')[0];
-      // 今日の未完了タスクを絞り込む
       const urgentTasks = this.todos.filter(t => t.state !== '完了' && t.dueDate === todayStr);
 
       if (urgentTasks.length > 0 && Notification.permission === 'granted') {
-        // タスクの内容（comment）を改行してつなげる
         const taskList = urgentTasks.map(t => `・${t.comment}`).join('\n');
         
         new Notification("今日のToDo", {
-          body: `期限のタスクが ${urgentTasks.length} 件あります！\n\n${taskList}`,
-          icon: "/favicon.ico"
+          body: `期限のタスクが ${urgentTasks.length} 件あります！\n\n${taskList}`
         });
       }
     },
@@ -71,7 +72,7 @@ new Vue({
         dueDate: this.newDate,
         state: '作業中',
         uid: this.user.uid,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp() // 作成日時（念のため）
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
       this.newTodo = '';
       this.newDate = '';
@@ -84,7 +85,7 @@ new Vue({
       }
     },
 
-    // 8. 状態（作業中/完了）の変更
+    // 8. 状態の変更
     doChangeState(item) {
       const newState = item.state === '作業中' ? '完了' : '作業中';
       db.collection('todos').doc(item.id).update({ state: newState });
@@ -92,17 +93,18 @@ new Vue({
   },
 
   created() {
+    // 【修正】ログイン状態を永続化（ブラウザを閉じても維持されるようにする）
+    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+
     firebase.auth().onAuthStateChanged(user => {
       this.user = user;
       if (user) {
-        // Firestoreからデータを取得（並び替え：状態が「作業中」が上 ＆ 期限が近い順）
         db.collection('todos')
           .where('uid', '==', user.uid)
           .orderBy('state', 'desc') 
           .orderBy('dueDate', 'asc')
           .onSnapshot(snapshot => {
             this.todos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            // データが更新されるたびに期限をチェック
             this.checkDeadlines();
           });
       } else {
@@ -111,5 +113,3 @@ new Vue({
     });
   }
 });
-
-
