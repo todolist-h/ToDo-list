@@ -32,17 +32,28 @@ new Vue({
     },
 
     // 4. 追加
-    doAdd() {
-      if(!this.newTodo) return;
-      db.collection('todos').add({
-        comment: this.newTodo,
-        dueDate: this.newDate,
-        state: '作業中',
-        uid: this.user.uid
-      });
-      this.newTodo = '';
-      this.newDate = ''; // 日付もリセットすると使いやすいです
-    },
+  doAdd() {
+  // 1. まずログインしているかチェック
+  if (!this.user) {
+    alert('タスクを追加するには、まずGoogleでログインしてください。');
+    return; // ログインしていないので、ここで処理を中断
+  }
+
+  // 2. タスク入力があるかチェック
+  if (!this.newTodo) return;
+
+  // 3. データベースに追加
+  db.collection('todos').add({
+    comment: this.newTodo,
+    dueDate: this.newDate,
+    state: '作業中',
+    uid: this.user.uid
+  });
+
+  // 4. 入力欄をリセット
+  this.newTodo = '';
+  this.newDate = '';
+},
 
     // 5. 削除
     doRemove(item) {
@@ -68,3 +79,4 @@ new Vue({
     });
   }
 });
+
