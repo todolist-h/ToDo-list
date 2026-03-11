@@ -59,3 +59,44 @@ td.button button { background: #e74c3c; }
 
 .text-danger { color: #e74c3c; font-weight: bold; }
 
+
+
+/* ログインエリア全体の右寄せ */
+.user-area {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+/* ユーザー情報のボックス（薄い灰色の背景） */
+.user-card {
+    background-color: #f0f0f0; /* 薄い灰色 */
+    padding: 8px 15px;
+    border-radius: 50px;       /* カプセル型 */
+    display: flex;
+    align-items: center;
+    gap: 10px;                 /* 要素間の隙間 */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* アイコン画像 */
+.user-icon {
+    width: 24px;               /* 名前と同じくらいのサイズ */
+    height: 24px;
+    border-radius: 50%;        /* 円形にする */
+    object-fit: cover;
+}
+
+/* ユーザー名 */
+.user-name {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #555;
+}
+
+/* ログアウトボタンを少し小さめに */
+.logout-button {
+    background: #999 !important; /* 目立ちすぎない色に */
+    padding: 3px 8px;
+    font-size: 0.75rem;
+}
