@@ -8,6 +8,11 @@ body {
     padding: 20px;
 }
 
+.text-danger {
+    color: #e74c3c; /* 鮮やかな赤 */
+    font-weight: bold;
+}
+
 #app {
     max-width: 640px;
     margin: 0 auto;
@@ -50,4 +55,5 @@ td.button button { background: #e74c3c; }
 }
 
 /* --- 特殊クラス --- */
+
 .text-danger { color: #e74c3c; font-weight: bold; }
