@@ -8,7 +8,8 @@ new Vue({
     newDate: '',
     user: null,
     isMenuOpen: false,
-    // 【修正】localStorageから設定を読み込む（なければ false）
+    showTerms: false, // ポップアップ開閉用
+    // localStorageから設定を読み込む（なければ false）
     notificationEnabled: localStorage.getItem('notify') === 'true'
   },
   methods: {
@@ -35,7 +36,6 @@ new Vue({
 
     // 4. 通知スイッチの切り替え処理
     toggleNotification() {
-      // 【修正】設定が変わるたびに localStorage に保存
       localStorage.setItem('notify', this.notificationEnabled);
       
       if (this.notificationEnabled && Notification.permission !== 'granted') {
@@ -93,7 +93,7 @@ new Vue({
   },
 
   created() {
-    // 【修正】ログイン状態を永続化（ブラウザを閉じても維持されるようにする）
+    // ログイン状態を永続化
     firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
     firebase.auth().onAuthStateChanged(user => {
@@ -110,12 +110,6 @@ new Vue({
       } else {
         this.todos = [];
       }
-
-      data: {
-    // ...既存の変数
-    showTerms: false // ポップアップ開閉用
-  },
     });
   }
 });
-
