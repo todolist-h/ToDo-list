@@ -12,6 +12,18 @@ new Vue({
     login() {
       const provider = new firebase.auth.GoogleAuthProvider();
       firebase.auth().signInWithPopup(provider);
+
+      // methods の中に追加
+isUrgent(dueDate) {
+  if (!dueDate) return false;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // 時間をリセットして日付のみで比較
+  const targetDate = new Date(dueDate);
+  targetDate.setHours(0, 0, 0, 0);
+
+  return targetDate <= today; // 今日、または今日より前なら true
+}
+      
     },
     logout() {
       firebase.auth().signOut();
@@ -46,4 +58,5 @@ new Vue({
       }
     });
   }
+
 });
