@@ -8,10 +8,6 @@ body {
     padding: 20px;
 }
 
-.text-danger {
-    color: #e74c3c; /* 鮮やかな赤 */
-    font-weight: bold;
-}
 
 #app {
     max-width: 640px;
