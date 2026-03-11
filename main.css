@@ -161,6 +161,20 @@ tbody tr.danger-item td {
 /* 完了済みのスタイルが優先されるように、CSSの順番は done-item の後に書くのがコツです */
 
 
+/* ポップアップの背景（半透明） */
+.modal-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5); z-index: 200;
+  display: flex; justify-content: center; align-items: center;
+}
+/* ポップアップの中身 */
+.modal-content {
+  background: white; padding: 20px; border-radius: 8px;
+  width: 80%; max-width: 500px; max-height: 80vh; overflow-y: auto;
+}
+.terms-text { margin: 20px 0; font-size: 0.9em; border: 1px solid #ddd; padding: 10px; }
+
+
 
 
 
