@@ -110,6 +110,12 @@ new Vue({
       } else {
         this.todos = [];
       }
+
+      data: {
+    // ...既存の変数
+    showTerms: false // ポップアップ開閉用
+  },
     });
   }
 });
+
