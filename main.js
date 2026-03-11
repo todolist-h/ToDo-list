@@ -9,25 +9,29 @@ new Vue({
     user: null
   },
   methods: {
+    // 1. ログイン
     login() {
       const provider = new firebase.auth.GoogleAuthProvider();
       firebase.auth().signInWithPopup(provider);
-
-      // methods の中に追加
-isUrgent(dueDate) {
-  if (!dueDate) return false;
-  const today = new Date();
-  today.setHours(0, 0, 0, 0); // 時間をリセットして日付のみで比較
-  const targetDate = new Date(dueDate);
-  targetDate.setHours(0, 0, 0, 0);
-
-  return targetDate <= today; // 今日、または今日より前なら true
-}
-      
     },
+
+    // 2. ログアウト
     logout() {
       firebase.auth().signOut();
     },
+
+    // 3. 期限チェック（ここを login の外に出しました）
+    isUrgent(dueDate) {
+      if (!dueDate) return false;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // 今日（0時0分）
+      const targetDate = new Date(dueDate);
+      targetDate.setHours(0, 0, 0, 0); // 期限日（0時0分）
+
+      return targetDate <= today; // 今日、または今日より前なら true
+    },
+
+    // 4. 追加
     doAdd() {
       if(!this.newTodo) return;
       db.collection('todos').add({
@@ -37,10 +41,15 @@ isUrgent(dueDate) {
         uid: this.user.uid
       });
       this.newTodo = '';
+      this.newDate = ''; // 日付もリセットすると使いやすいです
     },
+
+    // 5. 削除
     doRemove(item) {
       db.collection('todos').doc(item.id).delete();
     },
+
+    // 6. 状態変更
     doChangeState(item) {
       const newState = item.state === '作業中' ? '完了' : '作業中';
       db.collection('todos').doc(item.id).update({ state: newState });
@@ -58,5 +67,4 @@ isUrgent(dueDate) {
       }
     });
   }
-
 });
