@@ -29,13 +29,23 @@
     </div>
   </div>
 
-  <div class="modal-overlay" v-if="showTerms" @click="showTerms = false">
+<div class="modal-overlay" v-if="showTerms" @click="showTerms = false">
     <div class="modal-content" @click.stop>
       <h2>利用規約</h2>
-      <div class="terms-text">
-        <p>ここに規約の全文を記述します。<br>このアプリの利用には自己責任で……</p>
+      <div class="terms-text" style="text-align: left; font-size: 0.9em; height: 300px; overflow-y: auto; padding: 15px; border: 1px solid #ccc; background: #f9f9f9;">
+        <p><strong>第1条（目的）</strong><br>本利用規約は、本ToDoアプリ（以下「本アプリ」）が提供するサービス（以下「本サービス」）の利用条件を定めるものです。本アプリを利用するすべてのユーザー（以下「ユーザー」）は、本規約に同意したものとみなされます。</p>
+        
+        <p><strong>第2条（免責事項）</strong><br>1. 本アプリは現状有姿のまま提供されるものであり、その正確性、完全性、有用性について一切の保証を行いません。<br>2. ユーザーが本アプリを利用したこと、または利用できなかったことにより生じた損害（データの消失、タスクの管理不備等）について、開発者は一切の責任を負いません。</p>
+        
+        <p><strong>第3条（禁止事項）</strong><br>ユーザーは、本アプリの利用にあたり、以下の行為を行ってはなりません。<br>1. 法令または公序良俗に違反する行為。<br>2. 本アプリの運営を妨害する行為。<br>3. 他のユーザーのデータを不正に取得、改ざん、または消去する行為。<br>4. その他、開発者が不適切と判断する行為。</p>
+        
+        <p><strong>第4条（サービス内容の変更・終了）</strong><br>開発者は、ユーザーへの事前の通知なく、本サービスの全部または一部を変更、追加、または廃止することができるものとします。</p>
+        
+        <p><strong>第5条（個人情報の取り扱い）</strong><br>本アプリにおいて収集するGoogleログイン等の情報は、ユーザーのデータ管理の目的でのみ使用され、第三者への提供は行いません。</p>
+        
+        <p><strong>第6条（準拠法・管轄）</strong><br>本規約は日本法に準拠し、本サービスに関して紛争が生じた場合は、開発者の所在地を管轄する裁判所を専属的合意管轄裁判所とします。</p>
       </div>
-      <button @click="showTerms = false">閉じる</button>
+      <button @click="showTerms = false" style="margin-top: 15px; padding: 8px 20px; cursor: pointer;">閉じる</button>
     </div>
   </div>
 
@@ -102,3 +112,4 @@
   <script src="./main.js"></script>
 </body>
 </html>
+
