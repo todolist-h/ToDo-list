@@ -24,52 +24,49 @@
     </div>
   </div>
 
-  <h1>ToDoリスト</h1>"app">
-    <h1>ToDoリスト</h1>
+  <h1>ToDoリスト</h1>
 
-<div v-if="user" class="user-area">
-  <div class="user-card">
-    <img :src="user.photoURL" alt="icon" class="user-icon">
-    <span class="user-name">{{ user.displayName }}</span>
-    <button @click="logout" class="logout-button">ログアウト</button>
+  <div v-if="user" class="user-area">
+    <div class="user-card">
+      <img :src="user.photoURL" alt="icon" class="user-icon">
+      <span class="user-name">{{ user.displayName }}</span>
+      <button @click="logout" class="logout-button">ログアウト</button>
+    </div>
   </div>
-</div>
-
-<div v-else class="user-area">
-  <button @click="login">Googleでログイン</button>
-</div>
+  <div v-else class="user-area">
+    <button @click="login">Googleでログイン</button>
+  </div>
     
-    <form class="add-form" @submit.prevent="doAdd">
-      <input type="text" id="todo-input" v-model="newTodo" placeholder="タスクを入力">
-      <input type="date" id="todo-date" v-model="newDate">
-      <button type="submit">追加</button>
-    </form>
+  <form class="add-form" @submit.prevent="doAdd">
+    <input type="text" id="todo-input" v-model="newTodo" placeholder="タスクを入力">
+    <input type="date" id="todo-date" v-model="newDate">
+    <button type="submit">追加</button>
+  </form>
 
-    <table>
-      <thead>
-        <tr><th>コメント</th><th>期限</th><th>状態</th><th>-</th></tr>
-      </thead>
-      <tbody>
-<tr v-for="item in todos" :key="item.id" 
-    :class="{ 
-      'done-item': item.state === '完了', 
-      'danger-item': item.state !== '完了' && isUrgent(item.dueDate) 
-    }">
-          <td>{{ item.comment }}</td>
-          <td>{{ item.dueDate }}</td>
-          <td><button @click="doChangeState(item)">{{ item.state }}</button></td>
-          <td><button @click="doRemove(item)">削除</button></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <table>
+    <thead>
+      <tr><th>コメント</th><th>期限</th><th>状態</th><th>-</th></tr>
+    </thead>
+    <tbody>
+      <tr v-for="item in todos" :key="item.id" 
+          :class="{ 
+            'done-item': item.state === '完了', 
+            'danger-item': item.state !== '完了' && isUrgent(item.dueDate) 
+          }">
+        <td>{{ item.comment }}</td>
+        <td>{{ item.dueDate }}</td>
+        <td><button @click="doChangeState(item)">{{ item.state }}</button></td>
+        <td><button @click="doRemove(item)">削除</button></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
   <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   <script>
-    // 新しいキーを適用済み
     const firebaseConfig = {
       apiKey: "AIzaSyCX7awe_pw1dR4GXRQjJYE5SPBBGc416WY",
       authDomain: "todo-list-h.firebaseapp.com",
@@ -83,12 +80,3 @@
   <script src="./main.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
