@@ -11,7 +11,7 @@ body {
 /* ハンバーガーボタン */
 .hamburger {
   position: fixed; top: 20px; left: 20px; z-index: 100;
-  background: none; border: none; width: 40px; height: 30px; cursor: pointer; /* widthを40pxに変更 */
+  background: none; border: none; width: 45px; height: 30px; cursor: pointer; /* widthを40pxに変更 */
 }
 .hamburger span {
   display: block; width: 100%; /* 親要素のwidth(40px)に対して100%になる */
@@ -159,6 +159,7 @@ tbody tr.danger-item td {
 }
 
 /* 完了済みのスタイルが優先されるように、CSSの順番は done-item の後に書くのがコツです */
+
 
 
 
