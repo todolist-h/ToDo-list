@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +9,7 @@
 <body>
   <div id="app">
     <h1>ToDoリスト</h1>
+    
     <div v-if="user" class="user-area">
       <button @click="logout">ログアウト</button>
     </div>
@@ -17,8 +18,8 @@
     </div>
 
     <form class="add-form" @submit.prevent="doAdd">
-      <input type="text" v-model="newTodo" placeholder="タスクを入力">
-      <input type="date" v-model="newDate">
+      <input type="text" id="todo-input" v-model="newTodo" placeholder="タスクを入力">
+      <input type="date" id="todo-date" v-model="newDate">
       <button type="submit">追加</button>
     </form>
 
@@ -42,16 +43,6 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   <script>
+    // 新しいキーを適用済み
     const firebaseConfig = {
-      apiKey: "AIzaSyAW1wfKs1AJQqU_6vn-ZI5es6yN3auKV8g",
-      authDomain: "todo-list-h.firebaseapp.com",
-      projectId: "todo-list-h",
-      storageBucket: "todo-list-h.firebasestorage.app",
-      messagingSenderId: "653345122534",
-      appId: "1:653345122534:web:d48773cf94a3a4efa17327"
-    };
-    firebase.initializeApp(firebaseConfig);
-  </script>
-  <script src="./main.js"></script>
-</body>
-</html>
+      apiKey: "
