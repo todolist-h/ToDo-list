@@ -33,7 +33,11 @@
         <tr><th>コメント</th><th>期限</th><th>状態</th><th>-</th></tr>
       </thead>
       <tbody>
-<tr v-for="item in todos" :key="item.id" :class="{ 'done-item': item.state === '完了' }">
+<tr v-for="item in todos" :key="item.id" 
+    :class="{ 
+      'done-item': item.state === '完了', 
+      'danger-item': item.state !== '完了' && isUrgent(item.dueDate) 
+    }">
           <td>{{ item.comment }}</td>
           <td>{{ item.dueDate }}</td>
           <td><button @click="doChangeState(item)">{{ item.state }}</button></td>
@@ -62,6 +66,7 @@
   <script src="./main.js"></script>
 </body>
 </html>
+
 
 
 
