@@ -12,17 +12,22 @@
     <span></span><span></span><span></span>
   </button>
 
-  <div class="menu-overlay" v-if="isMenuOpen" @click="isMenuOpen = false"></div>
-  <div class="side-menu" :class="{ 'is-open': isMenuOpen }">
-    <h2>設定</h2>
-    <div class="menu-item">
-      <span>期限通知</span>
-      <label class="switch">
-        <input type="checkbox" v-model="notificationEnabled" @change="toggleNotification">
-        <span class="slider"></span>
-      </label>
-    </div>
+<div class="side-menu" :class="{ 'is-open': isMenuOpen }">
+  <h2>設定</h2>
+  <div class="menu-item" style="margin-top: 30px;">
+    <button @click="showTerms = true" style="cursor:pointer;">利用規約を表示</button>
   </div>
+</div>
+
+<div class="modal-overlay" v-if="showTerms" @click="showTerms = false">
+  <div class="modal-content" @click.stop>
+    <h2>利用規約</h2>
+    <div class="terms-text">
+      <p>ここに規約の全文を記述します。<br>このアプリの利用には自己責任で……</p>
+    </div>
+    <button @click="showTerms = false">閉じる</button>
+  </div>
+</div>
 
   <h1>ToDoリスト</h1>
 
@@ -87,4 +92,5 @@
   <script src="./main.js"></script>
 </body>
 </html>
+
 
