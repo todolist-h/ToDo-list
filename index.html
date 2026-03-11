@@ -9,13 +9,9 @@
 <body>
   <div id="app">
     <h1>ToDoリスト</h1>
-    
-<div v-if="user" class="user-area">
-  <button @click="logout">ログアウト</button>
-</div>
 
 <div v-if="user" class="user-area">
-  <p class="user-info">ログイン中: <strong>{{ user.displayName }}</strong> </p>
+  <p class="user-info">ログイン中: <strong>{{ user.displayName }}</strong> 
   <button @click="logout">ログアウト</button>
 </div>
     <form class="add-form" @submit.prevent="doAdd">
@@ -58,6 +54,7 @@
   <script src="./main.js"></script>
 </body>
 </html>
+
 
 
 
