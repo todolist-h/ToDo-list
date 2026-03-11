@@ -18,7 +18,14 @@ body {
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-h1 { font-family: 'Noto Sans JP', sans-serif; font-weight: 700; text-align: center; }
+h1 { 
+    font-family: 'Noto Sans JP', sans-serif; 
+    font-weight: 700; 
+    text-align: center; 
+    padding-bottom: 10px;           /* 文字と線の間の隙間 */
+    border-bottom: 3px solid #0099e4; /* 水色の太めの線 */
+    margin-bottom: 25px;            /* 下のコンテンツとの隙間 */
+}
 h2 { margin: 10px 0 5px 0; font-size: 1.2rem; }
 
 /* --- フォームとフィルタ --- */
@@ -109,4 +116,5 @@ tbody tr.danger-item td {
 }
 
 /* 完了済みのスタイルが優先されるように、CSSの順番は done-item の後に書くのがコツです */
+
 
