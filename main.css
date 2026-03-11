@@ -11,7 +11,7 @@ body {
 /* ハンバーガーボタン */
 .hamburger {
   position: fixed; top: 20px; left: 20px; z-index: 100;
-  background: none; border: none; width: 55px; height: 30px; cursor: pointer; /* widthを40pxに変更 */
+  background: none; border: none; width: 58px; height: 30px; cursor: pointer; /* widthを40pxに変更 */
 }
 .hamburger span {
   display: block; width: 100%; /* 親要素のwidth(40px)に対して100%になる */
@@ -173,6 +173,7 @@ tbody tr.danger-item td {
   width: 80%; max-width: 500px; max-height: 80vh; overflow-y: auto;
 }
 .terms-text { margin: 20px 0; font-size: 0.9em; border: 1px solid #ddd; padding: 10px; }
+
 
 
 
