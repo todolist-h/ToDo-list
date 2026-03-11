@@ -17,7 +17,7 @@ body {
   display: block; width: 100%; /* 親要素のwidth(40px)に対して100%になる */
   height: 3px;
   background: #0099e4; 
-  margin-bottom: 7px; /* 間隔を少し広げるとバランスが良くなります */
+  margin-bottom: 9px; /* 間隔を少し広げるとバランスが良くなります */
   border-radius: 2px;
 }
 
@@ -173,6 +173,7 @@ tbody tr.danger-item td {
   width: 80%; max-width: 500px; max-height: 80vh; overflow-y: auto;
 }
 .terms-text { margin: 20px 0; font-size: 0.9em; border: 1px solid #ddd; padding: 10px; }
+
 
 
 
