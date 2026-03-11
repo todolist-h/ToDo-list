@@ -6,33 +6,12 @@ new Vue({
     todos: [],
     newTodo: '',
     newDate: '',
-    user: null
+    user: null,
+    isMenuOpen: false,           // サイドメニューの開閉状態
+    notificationEnabled: true    // 通知スイッチの状態
   },
-
-  data: {
-  todos: [],
-  newTodo: '',
-  newDate: '',
-  user: null,
-  isMenuOpen: false,           // メニューの開閉
-  notificationEnabled: true    // 通知のON/OFF
-},
-methods: {
-  toggleNotification() {
-    if (this.notificationEnabled && Notification.permission !== 'granted') {
-      Notification.requestPermission();
-    }
-  },
-  // checkDeadlines の中に条件を追加
-  checkDeadlines() {
-    if (!this.notificationEnabled) return; // 通知オフなら何もしない
-    // ...以前の通知処理
-  },
-  // ... 他のメソッド
-}
-  
   methods: {
-    // 1. ログイン
+    // 1. Googleログイン
     login() {
       const provider = new firebase.auth.GoogleAuthProvider();
       firebase.auth().signInWithPopup(provider);
@@ -43,71 +22,87 @@ methods: {
       firebase.auth().signOut();
     },
 
-    // 3. 期限チェック（ここを login の外に出しました）
+    // 3. 期限が今日以前かチェックする（CSSクラス用）
     isUrgent(dueDate) {
       if (!dueDate) return false;
       const today = new Date();
-      today.setHours(0, 0, 0, 0); // 今日（0時0分）
+      today.setHours(0, 0, 0, 0);
       const targetDate = new Date(dueDate);
-      targetDate.setHours(0, 0, 0, 0); // 期限日（0時0分）
-
-      return targetDate <= today; // 今日、または今日より前なら true
+      targetDate.setHours(0, 0, 0, 0);
+      return targetDate <= today;
     },
 
-    // 4. 追加
-  doAdd() {
-  // 1. まずログインしているかチェック
-  if (!this.user) {
-    alert('タスクを追加するには、まずGoogleでログインしてください。');
-    return; // ログインしていないので、ここで処理を中断
-  }
+    // 4. 通知スイッチの切り替え処理
+    toggleNotification() {
+      if (this.notificationEnabled && Notification.permission !== 'granted') {
+        Notification.requestPermission();
+      }
+    },
 
-  // 2. タスク入力があるかチェック
-  if (!this.newTodo) return;
+    // 5. 期限切れタスクをチェックしてブラウザ通知を出す
+    checkDeadlines() {
+      if (!this.notificationEnabled) return; // スイッチがオフなら何もしない
 
-  // 3. データベースに追加
-  db.collection('todos').add({
-    comment: this.newTodo,
-    dueDate: this.newDate,
-    state: '作業中',
-    uid: this.user.uid
-  });
+      const todayStr = new Date().toISOString().split('T')[0];
+      const urgentTasks = this.todos.filter(t => t.state !== '完了' && t.dueDate === todayStr);
 
-  // 4. 入力欄をリセット
-  this.newTodo = '';
-  this.newDate = '';
-},
+      if (urgentTasks.length > 0 && Notification.permission === 'granted') {
+        new Notification("ToDoリスト", {
+          body: `今日が期限のタスクが ${urgentTasks.length} 件あります！`
+        });
+      }
+    },
 
-    // 5. 削除
+    // 6. タスクの追加
+    doAdd() {
+      if (!this.user) {
+        alert('タスクを追加するには、まずGoogleでログインしてください。');
+        return;
+      }
+      if (!this.newTodo) return;
+      
+      db.collection('todos').add({
+        comment: this.newTodo,
+        dueDate: this.newDate,
+        state: '作業中',
+        uid: this.user.uid,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp() // 作成日時（念のため）
+      });
+      this.newTodo = '';
+      this.newDate = '';
+    },
+
+    // 7. タスクの削除
     doRemove(item) {
-      db.collection('todos').doc(item.id).delete();
+      if (confirm('本当に削除しますか？')) {
+        db.collection('todos').doc(item.id).delete();
+      }
     },
 
-    // 6. 状態変更
+    // 8. 状態（作業中/完了）の変更
     doChangeState(item) {
       const newState = item.state === '作業中' ? '完了' : '作業中';
       db.collection('todos').doc(item.id).update({ state: newState });
     }
   },
-// created() の中を以下のように書き換え
-created() {
-  firebase.auth().onAuthStateChanged(user => {
-    this.user = user;
-    if (user) {
-      // 状態(state)で降順（作業中→完了）、期限(dueDate)で昇順（近い順）に並べる
-      db.collection('todos')
-        .where('uid', '==', user.uid)
-        .orderBy('state', 'desc') 
-        .orderBy('dueDate', 'asc')
-        .onSnapshot(snapshot => {
-          this.todos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        });
-    } else {
-      this.todos = [];
-    }
-  });
-}
+
+  created() {
+    firebase.auth().onAuthStateChanged(user => {
+      this.user = user;
+      if (user) {
+        // Firestoreからデータを取得（並び替え：状態が「作業中」が上 ＆ 期限が近い順）
+        db.collection('todos')
+          .where('uid', '==', user.uid)
+          .orderBy('state', 'desc') 
+          .orderBy('dueDate', 'asc')
+          .onSnapshot(snapshot => {
+            this.todos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            // データが更新されるたびに期限をチェック
+            this.checkDeadlines();
+          });
+      } else {
+        this.todos = [];
+      }
+    });
+  }
 });
-
-
-
