@@ -11,9 +11,13 @@
     <h1>ToDoリスト</h1>
 
 <div v-if="user" class="user-area">
-  <p class="user-info">ログイン中: <strong>{{ user.displayName }}</strong> 
-  <button @click="logout">ログアウト</button>
+  <div class="user-card">
+    <img :src="user.photoURL" alt="icon" class="user-icon">
+    <span class="user-name">{{ user.displayName }}</span>
+    <button @click="logout" class="logout-button">ログアウト</button>
+  </div>
 </div>
+    
     <form class="add-form" @submit.prevent="doAdd">
       <input type="text" id="todo-input" v-model="newTodo" placeholder="タスクを入力">
       <input type="date" id="todo-date" v-model="newDate">
@@ -54,6 +58,7 @@
   <script src="./main.js"></script>
 </body>
 </html>
+
 
 
 
