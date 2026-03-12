@@ -76,17 +76,16 @@
     <button type="submit">追加</button>
   </form>
 
-  <h2>進行中のタスク</h2>
-  <table>
+ <h2 style="margin-top: 40px;">完了済みタスク</h2>
+  <table class="archive-table">
     <thead>
       <tr><th>コメント</th><th>期限</th><th>状態</th><th>-</th></tr>
     </thead>
     <tbody>
-      <tr v-for="item in activeTodos" :key="item.id" 
-          :class="{ 'danger-item': isUrgent(item.dueDate) }">
+      <tr v-for="item in archivedTodos" :key="item.id">
         <td>{{ item.comment }}</td>
         <td>{{ item.dueDate }}</td>
-        <td><button @click="doChangeState(item)">完了にする</button></td>
+        <td><button @click="doChangeState(item)">戻す</button></td>
         <td><button @click="doRemove(item)">削除</button></td>
       </tr>
     </tbody>
@@ -132,3 +131,4 @@
   <script src="./main.js"></script>
 </body>
 </html>
+
