@@ -32,6 +32,16 @@
       </label>
     </div>
 
+        <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<div class="menu-item">
+  <span>完了エフェクト</span>
+  <label class="switch">
+    <input type="checkbox" v-model="effectEnabled" @change="toggleEffect">
+    <span class="slider"></span>
+  </label>
+</div>
+        
     <div class="menu-item" style="margin-top: 30px;">
       <button @click="showTerms = true" style="cursor:pointer;">利用規約を表示</button>
     </div>
@@ -142,3 +152,4 @@
   <script src="./main.js"></script>
 </body>
 </html>
+
