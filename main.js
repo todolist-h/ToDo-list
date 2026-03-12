@@ -22,7 +22,7 @@ new Vue({
   },
   computed: {
     activeTodos() {
-      // 期限を数値化する安全な関数
+      // 期限を数値化する安全な関数（期限なしは未来日として処理）
       const getDueDate = (item) => {
         if (!item.dueDate || item.dueDate === "") return 9999999999999;
         const d = new Date(item.dueDate).getTime();
@@ -94,7 +94,14 @@ new Vue({
       }
     },
     doAdd() {
-      if (!this.user || !this.newTodo) return;
+      if (!this.user) {
+        alert('タスクを追加するには、Googleアカウントでログインしてください。');
+        return;
+      }
+      if (!this.newTodo) {
+        alert('タスクの内容を入力してください。');
+        return;
+      }
       
       db.collection('todos').add({
         comment: this.newTodo,
