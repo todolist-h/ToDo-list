@@ -179,4 +179,8 @@ tbody tr.danger-item td {
   background-color: #f0f0f0;
 }
 
+/* main.css に追加 */
+.star-on {
+  color: #ffcc00; /* スターがONの時の黄色 */
+}
 
