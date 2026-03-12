@@ -20,19 +20,28 @@ new Vue({
     editComment: '',      // 編集用の一時的なテキスト
     editDate: ''          // 編集用の一時的な日付
   },
-  computed: {
-    // 期限が近い順に並び替えるロジックを追加
-    activeTodos() {
-      return this.todos
-        .filter(item => item.state !== '完了')
-        .sort((a, b) => {
-          // 期限がないものは後ろへ
-          if (!a.dueDate) return 1;
-          if (!b.dueDate) return -1;
-          // 期限が近い順（昇順）
-          return new Date(a.dueDate) - new Date(b.dueDate);
-        });
-    },
+activeTodos() {
+  return this.todos
+    .filter(item => item.state !== '完了')
+    .sort((a, b) => {
+      // 1. 星の状態を比較 (trueが前になるように)
+      if (a.isStarred !== b.Starred) {
+        return a.isStarred ? -1 : 1;
+      }
+      
+      // 2. 星が同じなら、期限を比較
+      const dateA = a.dueDate ? new Date(a.dueDate) : null;
+      const dateB = b.dueDate ? new Date(b.dueDate) : null;
+      
+      // 期限がないものは後ろへ
+      if (!dateA && dateB) return 1;
+      if (dateA && !dateB) return -1;
+      if (!dateA && !dateB) return 0;
+      
+      // 期限がある場合は近い順
+      return dateA - dateB;
+    });
+}
     archivedTodos() {
       return this.todos
         .filter(item => item.state === '完了')
@@ -154,3 +163,4 @@ new Vue({
     }
   }
 });
+
