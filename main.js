@@ -15,39 +15,42 @@ new Vue({
     effectEnabled: localStorage.getItem('effect') !== 'false',
     
     // 編集・モード管理用データ
-    isEditMode: false,    // 編集モード自体のON/OFF
-    editingId: null,      // 編集中のタスクID
-    editComment: '',      // 編集用の一時的なテキスト
-    editDate: ''          // 編集用の一時的な日付
+    isEditMode: false,
+    editingId: null,
+    editComment: '',
+    editDate: ''
   },
-activeTodos() {
-  return this.todos
-    .filter(item => item.state !== '完了')
-    .sort((a, b) => {
-      // 1. 星の状態を比較 (trueが前になるように)
-      if (a.isStarred !== b.Starred) {
-        return a.isStarred ? -1 : 1;
-      }
-      
-      // 2. 星が同じなら、期限を比較
-      const dateA = a.dueDate ? new Date(a.dueDate) : null;
-      const dateB = b.dueDate ? new Date(b.dueDate) : null;
-      
-      // 期限がないものは後ろへ
-      if (!dateA && dateB) return 1;
-      if (dateA && !dateB) return -1;
-      if (!dateA && !dateB) return 0;
-      
-      // 期限がある場合は近い順
-      return dateA - dateB;
-    });
-}
+  computed: {
+    // 星付き優先かつ期限の近い順にソートするロジック
+    activeTodos() {
+      return this.todos
+        .filter(item => item.state !== '完了')
+        .sort((a, b) => {
+          // 1. 星の状態を比較 (trueの星付きを先頭に)
+          if (a.isStarred !== b.isStarred) {
+            return a.isStarred ? -1 : 1;
+          }
+          
+          // 2. 星が同じなら期限を比較
+          const dateA = a.dueDate ? new Date(a.dueDate) : null;
+          const dateB = b.dueDate ? new Date(b.dueDate) : null;
+          
+          // どちらも期限がない場合は順序維持
+          if (!dateA && !dateB) return 0;
+          // 期限がない方は後ろへ
+          if (!dateA) return 1;
+          if (!dateB) return -1;
+          
+          // 期限がある場合は近い順（昇順）
+          return dateA - dateB;
+        });
+    },
     archivedTodos() {
+      // 完了済みは期限の新しい順
       return this.todos
         .filter(item => item.state === '完了')
         .sort((a, b) => {
-          // 完了済みは新しい順など好みに合わせて調整可能
-          return new Date(b.dueDate) - new Date(a.dueDate);
+          return new Date(b.dueDate || 0) - new Date(a.dueDate || 0);
         });
     }
   },
@@ -147,7 +150,6 @@ activeTodos() {
     firebase.auth().onAuthStateChanged(user => {
       this.user = user;
       if (user) {
-        // 並び替えはcomputed側で行うため、ここではシンプルに取得
         db.collection('todos').where('uid', '==', user.uid)
           .onSnapshot(snapshot => {
             this.todos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -163,4 +165,3 @@ activeTodos() {
     }
   }
 });
-
