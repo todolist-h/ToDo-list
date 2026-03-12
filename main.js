@@ -21,32 +21,29 @@ new Vue({
     editDate: ''
   },
   computed: {
-    // 星付き優先かつ期限の近い順にソートするロジック
+    // 【重要】並び替えロジック
+    // 1. 星付き(isStarred: true)を先頭にする
+    // 2. 星が同じなら、期限(dueDate)が近い順にする
     activeTodos() {
       return this.todos
         .filter(item => item.state !== '完了')
         .sort((a, b) => {
-          // 1. 星の状態を比較 (trueの星付きを先頭に)
+          // 1. 星の比較
           if (a.isStarred !== b.isStarred) {
             return a.isStarred ? -1 : 1;
           }
           
-          // 2. 星が同じなら期限を比較
-          const dateA = a.dueDate ? new Date(a.dueDate) : null;
-          const dateB = b.dueDate ? new Date(b.dueDate) : null;
+          // 2. 星が同じなら期限の比較
+          const dateA = a.dueDate ? new Date(a.dueDate).getTime() : null;
+          const dateB = b.dueDate ? new Date(b.dueDate).getTime() : null;
           
-          // どちらも期限がない場合は順序維持
           if (!dateA && !dateB) return 0;
-          // 期限がない方は後ろへ
-          if (!dateA) return 1;
+          if (!dateA) return 1;  // 期限なしは後ろへ
           if (!dateB) return -1;
-          
-          // 期限がある場合は近い順（昇順）
-          return dateA - dateB;
+          return dateA - dateB;  // 期限の昇順
         });
     },
     archivedTodos() {
-      // 完了済みは期限の新しい順
       return this.todos
         .filter(item => item.state === '完了')
         .sort((a, b) => {
@@ -101,7 +98,7 @@ new Vue({
       
       db.collection('todos').add({
         comment: this.newTodo,
-        dueDate: this.newDate,
+        dueDate: this.newDate || null, // nullで保存してソートを安定させる
         state: '作業中',
         isStarred: false,
         uid: this.user.uid,
@@ -137,7 +134,7 @@ new Vue({
       if (!this.editComment) return;
       db.collection('todos').doc(item.id).update({
         comment: this.editComment,
-        dueDate: this.editDate
+        dueDate: this.editDate || null
       }).then(() => this.cancelEdit());
     },
     runConfetti() {
