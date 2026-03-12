@@ -180,15 +180,3 @@ tbody tr.danger-item td {
 }
 
 
-/* テーブル全体のセル（見出しとデータ）の上下パディングを小さくする */
-table th, 
-table td {
-  padding: 4px 8px; /* 上下の余白を4px、左右を8pxに調整 */
-}
-
-/* 必要に応じて、ボタンのサイズも少し小さくするとさらに詰まります */
-table button {
-  padding: 4px 8px;
-  font-size: 1em;
-}
-
