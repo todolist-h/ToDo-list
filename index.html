@@ -82,7 +82,11 @@
       <tr><th>★</th><th>コメント</th><th>期限</th><th>状態</th><th>-</th></tr>
     </thead>
     <tbody>
-      <tr v-for="item in activeTodos" :key="item.id" :class="{ 'danger-item': isUrgent(item.dueDate) }">
+      <tr v-for="item in activeTodos" :key="item.id" 
+          :class="{ 
+            'danger-item': isUrgent(item.dueDate), 
+            'starred-item': item.isStarred 
+          }">
         <td @click="doToggleStar(item)" style="cursor:pointer; font-size: 1.2em;" :class="{'star-on': item.isStarred}">
           {{ item.isStarred ? '★' : '☆' }}
         </td>
