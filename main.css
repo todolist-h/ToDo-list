@@ -8,53 +8,100 @@ body {
     padding: 20px;
 }
 
-/* ハンバーガーボタン */
+/* --- ハンバーガーボタン --- */
 .hamburger {
-  position: fixed; top: 20px; left: 20px; z-index: 100;
-  background: none; border: none; width: 60px; height: 35px; cursor: pointer; /* widthを40pxに変更 */
+  position: fixed; 
+  top: 20px; 
+  left: 20px; 
+  z-index: 100;
+  background: none; 
+  border: none; 
+  width: 40px; /* バランスを考えて40pxに固定 */
+  height: 35px; 
+  cursor: pointer;
 }
 .hamburger span {
-  display: block; width: 100%; /* 親要素のwidth(40px)に対して100%になる */
+  display: block; 
+  width: 100%; 
   height: 3px;
   background: #0099e4; 
-  margin-bottom: 10.5px; /* 間隔を少し広げるとバランスが良くなります */
+  margin-bottom: 8px; 
   border-radius: 2px;
+  transition: 0.3s;
 }
 
-/* サイドメニュー本体 */
+/* --- サイドメニュー本体 --- */
 .side-menu {
-  position: fixed; top: 0; left: -250px; width: 250px; height: 100%;
-  background: white; z-index: 101; padding: 20px;
+  position: fixed; 
+  top: 0; 
+  left: -250px; 
+  width: 250px; 
+  height: 100%;
+  background: white; 
+  z-index: 101; 
+  padding: 25px 20px;
   box-shadow: 2px 0 5px rgba(0,0,0,0.2);
-  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); /* ホヨンとした動き */
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 .side-menu.is-open { left: 0; }
-
-/* 背景を暗くする */
-.menu-overlay {
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0,0,0,0.3); z-index: 100;
+.side-menu h2 {
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
 }
 
-/* スイッチのデザイン */
-.menu-item { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; }
-.switch { position: relative; display: inline-block; width: 40px; height: 20px; }
+/* 背景を暗くする（オーバーレイ） */
+.menu-overlay {
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  height: 100%;
+  background: rgba(0,0,0,0.3); 
+  z-index: 100;
+}
+
+/* --- メニュー内のスイッチデザイン --- */
+.menu-item { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  margin-top: 20px; 
+  font-size: 0.95rem;
+}
+.switch { 
+  position: relative; 
+  display: inline-block; 
+  width: 40px; 
+  height: 20px; 
+}
 .switch input { opacity: 0; width: 0; height: 0; }
 .slider {
-  position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-  background-color: #ccc; transition: .4s; border-radius: 20px;
+  position: absolute; 
+  cursor: pointer; 
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #ccc; 
+  transition: .4s; 
+  border-radius: 20px;
 }
 .slider:before {
-  position: absolute; content: ""; height: 16px; width: 16px;
-  left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%;
+  position: absolute; 
+  content: ""; 
+  height: 16px; 
+  width: 16px;
+  left: 2px; 
+  bottom: 2px; 
+  background-color: white; 
+  transition: .4s; 
+  border-radius: 50%;
 }
 input:checked + .slider { background-color: #0099e4; }
 input:checked + .slider:before { transform: translateX(20px); }
 
-
+/* --- メインコンテンツエリア --- */
 #app {
     max-width: 640px;
-    margin: 0 auto;
+    margin: 40px auto 0; /* メニューボタンとの被り防止 */
     background: #fff;
     padding: 20px;
     border-radius: 8px;
@@ -65,126 +112,126 @@ h1 {
     font-family: 'Noto Sans JP', sans-serif; 
     font-weight: 700; 
     text-align: center; 
-    padding-bottom: 10px;           /* 文字と線の間の隙間 */
-    border-bottom: 3px solid #0099e4; /* 水色の太めの線 */
-    margin-bottom: 25px;            /* 下のコンテンツとの隙間 */
+    padding-bottom: 10px;
+    border-bottom: 3px solid #0099e4; 
+    margin-bottom: 25px;
 }
-h2 { margin: 10px 0 5px 0; font-size: 1.2rem; }
+h2 { margin: 30px 0 10px 0; font-size: 1.2rem; color: #0099e4; }
 
-/* --- フォームとフィルタ --- */
-.add-box { background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #ddd; }
-.add-form input { padding: 5px; border: 1px solid #ccc; border-radius: 4px; }
-.filter-menu { margin-bottom: 10px; }
-label { margin-right: 15px; cursor: pointer; font-size: 0.9rem; }
+/* --- フォーム --- */
+.add-form { 
+    background-color: #f9f9f9; 
+    padding: 15px; 
+    border-radius: 8px; 
+    margin-bottom: 20px; 
+    border: 1px solid #eee;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.add-form input { 
+    padding: 8px; 
+    border: 1px solid #ccc; 
+    border-radius: 4px;
+    flex: 1;
+}
+.add-form input[type="date"] { flex: 0 0 150px; }
 
 /* --- テーブル --- */
 table { width: 100%; border-collapse: collapse; margin-top: 5px; }
 thead th { border-bottom: 2px solid #0099e4; color: #0099e4; text-align: left; padding: 12px 8px; }
-th, td { padding: 12px 8px; border-bottom: 1px solid #eee; transition: all 0.3s; }
+th, td { padding: 12px 8px; border-bottom: 1px solid #eee; }
 tbody tr:hover td { background: #f4fbff; }
-/* 「完了」状態の行のスタイル */
-tbody tr.done-item td { 
-    background-color: #e0e0e0 !important; /* 背景を暗く */
-    color: #888 !important;              /* 文字を薄く */
-    text-decoration: line-through;      /* 打ち消し線 */
+
+/* --- 特殊な行状態（優先順位順） --- */
+
+/* 1. スター付き（薄い黄色） */
+.starred-item td {
+    background-color: #fff9c4 !important;
+}
+.star-on {
+    color: #ffcc00;
+    text-shadow: 0 0 1px rgba(0,0,0,0.2);
 }
 
-/* --- ボタン --- */
-button {
-    border: none; border-radius: 4px; padding: 5px 12px;
-    background: #0099e4; color: #fff; cursor: pointer; font-size: 0.85rem;
-}
-button:hover { opacity: 0.8; }
-td.button button { background: #e74c3c; }
-
-/* --- スマホ対応 (レスポンシブ) --- */
-@media (max-width: 480px) {
-    body { padding: 10px; }
-    #app { padding: 15px; }
-    .add-form input[type="text"] { width: 100%; display: block; margin-bottom: 5px; }
-    th, td { font-size: 0.8rem; padding: 6px 2px; }
+/* 2. 期限当日・超過（薄い赤） ※スターより優先 */
+.danger-item td {
+    background-color: #fff0f0 !important;
+    color: #d9534f;
+    font-weight: bold;
 }
 
-/* --- 特殊クラス --- */
+/* 3. 完了済みのスタイル（アーカイブ） */
+.archive-table {
+    opacity: 0.8;
+}
+.archive-table td {
+    background-color: #fafafa !important;
+    color: #888;
+}
 
-.text-danger { color: #e74c3c; font-weight: bold; }
-
-
-
-/* ログインエリア全体の右寄せ */
+/* --- ユーザーエリア --- */
 .user-area {
     display: flex;
     justify-content: flex-end;
     margin-bottom: 20px;
 }
-
-/* ユーザー情報のボックス（薄い灰色の背景） */
 .user-card {
-    background-color: #f0f0f0; /* 薄い灰色 */
+    background-color: #f0f0f0;
     padding: 8px 15px;
-    border-radius: 50px;       /* カプセル型 */
+    border-radius: 50px;
     display: flex;
     align-items: center;
-    gap: 10px;                 /* 要素間の隙間 */
+    gap: 10px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
-
-/* アイコン画像 */
 .user-icon {
-    width: 24px;               /* 名前と同じくらいのサイズ */
+    width: 24px;
     height: 24px;
-    border-radius: 50%;        /* 円形にする */
+    border-radius: 50%;
     object-fit: cover;
 }
-
-/* ユーザー名 */
 .user-name {
     font-size: 0.9rem;
     font-weight: bold;
     color: #555;
 }
 
-/* ログアウトボタンを少し小さめに */
+/* --- ボタン --- */
+button {
+    border: none; border-radius: 4px; padding: 6px 12px;
+    background: #0099e4; color: #fff; cursor: pointer; font-size: 0.85rem;
+    transition: 0.2s;
+}
+button:hover { opacity: 0.8; }
 .logout-button {
-    background: #999 !important; /* 目立ちすぎない色に */
+    background: #999 !important;
     padding: 3px 8px;
     font-size: 0.75rem;
 }
-
-/* 期限当日・超過の行（未完了のみ適用） */
-tbody tr.danger-item td {
-    background-color: #fff0f0 !important; /* 薄い赤 */
-    color: #d9534f;                     /* 文字も少し赤っぽく */
-    font-weight: bold;
+/* 削除ボタンなどは赤にする場合 */
+td button[onclick*="doRemove"], /* 簡易判定 */
+td button:last-child { 
+    background: #e74c3c; 
 }
 
-/* 完了済みのスタイルが優先されるように、CSSの順番は done-item の後に書くのがコツです */
-
-
-/* ポップアップの背景（半透明） */
+/* --- モーダル（利用規約） --- */
 .modal-overlay {
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
   background: rgba(0,0,0,0.5); z-index: 200;
   display: flex; justify-content: center; align-items: center;
 }
-/* ポップアップの中身 */
 .modal-content {
-  background: white; padding: 20px; border-radius: 8px;
-  width: 80%; max-width: 500px; max-height: 80vh; overflow-y: auto;
-}
-.terms-text { margin: 20px 0; font-size: 0.9em; border: 1px solid #ddd; padding: 10px; }
-
-.archive-table {
-  opacity: 0.7; /* 少し薄くする */
-  background-color: #f0f0f0;
+  background: white; padding: 25px; border-radius: 8px;
+  width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto;
+  text-align: center;
 }
 
-/* main.css に追加 */
-.star-on {
-  color: #ffcc00; /* スターがONの時の黄色 */
-}
-
-/* スターが付いているタスクの背景を薄い黄色にする */
-.starred-item {
-  background-color: #fff9c4; /* 薄い黄色 */
+/* --- スマホ対応 --- */
+@media (max-width: 480px) {
+    body { padding: 10px; }
+    #app { padding: 15px; margin-top: 50px; }
+    .add-form { flex-direction: column; }
+    .add-form input[type="date"] { flex: 1; }
+    th, td { font-size: 0.75rem; padding: 8px 4px; }
 }
