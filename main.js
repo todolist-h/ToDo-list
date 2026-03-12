@@ -21,11 +21,25 @@ new Vue({
     editDate: ''          // 編集用の一時的な日付
   },
   computed: {
+    // 期限が近い順に並び替えるロジックを追加
     activeTodos() {
-      return this.todos.filter(item => item.state !== '完了');
+      return this.todos
+        .filter(item => item.state !== '完了')
+        .sort((a, b) => {
+          // 期限がないものは後ろへ
+          if (!a.dueDate) return 1;
+          if (!b.dueDate) return -1;
+          // 期限が近い順（昇順）
+          return new Date(a.dueDate) - new Date(b.dueDate);
+        });
     },
     archivedTodos() {
-      return this.todos.filter(item => item.state === '完了');
+      return this.todos
+        .filter(item => item.state === '完了')
+        .sort((a, b) => {
+          // 完了済みは新しい順など好みに合わせて調整可能
+          return new Date(b.dueDate) - new Date(a.dueDate);
+        });
     }
   },
   methods: {
@@ -54,7 +68,6 @@ new Vue({
       localStorage.setItem('effect', this.effectEnabled);
     },
     toggleEditMode() {
-      // 編集モードを抜けるときは編集中の内容をクリア
       if (!this.isEditMode) {
         this.cancelEdit();
       }
@@ -125,9 +138,8 @@ new Vue({
     firebase.auth().onAuthStateChanged(user => {
       this.user = user;
       if (user) {
+        // 並び替えはcomputed側で行うため、ここではシンプルに取得
         db.collection('todos').where('uid', '==', user.uid)
-          .orderBy('isStarred', 'desc')
-          .orderBy('createdAt', 'desc')
           .onSnapshot(snapshot => {
             this.todos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             this.checkDeadlines();
