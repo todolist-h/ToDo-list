@@ -16,7 +16,7 @@ body {
   z-index: 100;
   background: none; 
   border: none; 
-  width: 40px; /* バランスを考えて40pxに固定 */
+  width: 55px; /* バランスを考えて40pxに固定 */
   height: 35px; 
   cursor: pointer;
 }
@@ -235,3 +235,4 @@ td button:last-child {
     .add-form input[type="date"] { flex: 1; }
     th, td { font-size: 0.75rem; padding: 8px 4px; }
 }
+
