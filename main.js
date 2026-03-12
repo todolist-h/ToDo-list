@@ -8,9 +8,19 @@ new Vue({
     newDate: '',
     user: null,
     isMenuOpen: false,
-    showTerms: false, // ポップアップ開閉用
-    // localStorageから設定を読み込む（なければ false）
+    showTerms: false,
+    // localStorageから設定を読み込む
     notificationEnabled: localStorage.getItem('notify') === 'true'
+  },
+  computed: {
+    // 進行中のタスクをフィルタリング
+    activeTodos() {
+      return this.todos.filter(item => item.state !== '完了');
+    },
+    // 完了済みのタスク（アーカイブ）をフィルタリング
+    archivedTodos() {
+      return this.todos.filter(item => item.state === '完了');
+    }
   },
   methods: {
     // 1. Googleログイン
@@ -43,7 +53,7 @@ new Vue({
       }
     },
 
-    // 5. 期限切れタスクをチェックしてブラウザ通知を出す
+    // 5. 期限切れタスクをチェック
     checkDeadlines() {
       if (!this.notificationEnabled) return;
 
@@ -85,7 +95,7 @@ new Vue({
       }
     },
 
-    // 8. 状態の変更
+    // 8. 状態の変更（「作業中」と「完了」の切り替え）
     doChangeState(item) {
       const newState = item.state === '作業中' ? '完了' : '作業中';
       db.collection('todos').doc(item.id).update({ state: newState });
@@ -93,7 +103,6 @@ new Vue({
   },
 
   created() {
-    // ログイン状態を永続化
     firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
     firebase.auth().onAuthStateChanged(user => {
@@ -101,8 +110,7 @@ new Vue({
       if (user) {
         db.collection('todos')
           .where('uid', '==', user.uid)
-          .orderBy('state', 'desc') 
-          .orderBy('dueDate', 'asc')
+          .orderBy('createdAt', 'desc') // 作成日時順で取得
           .onSnapshot(snapshot => {
             this.todos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             this.checkDeadlines();
@@ -112,7 +120,6 @@ new Vue({
       }
     });
 
-    // 初回訪問時のみ利用規約を表示
     if (!localStorage.getItem('hasSeenTerms')) {
       this.showTerms = true;
       localStorage.setItem('hasSeenTerms', 'true');
