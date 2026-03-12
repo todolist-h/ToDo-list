@@ -184,3 +184,7 @@ tbody tr.danger-item td {
   color: #ffcc00; /* スターがONの時の黄色 */
 }
 
+/* スターが付いているタスクの背景を薄い黄色にする */
+.starred-item {
+  background-color: #fff9c4; /* 薄い黄色 */
+}
