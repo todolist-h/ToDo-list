@@ -138,3 +138,35 @@ td:last-child button { background: #e74c3c; }
     th, td { font-size: 0.75rem; padding: 8px 4px; }
     .edit-input-date { width: 100%; }
 }
+/* ボタンの基本スタイルを少し調整 */
+.done-btn {
+  background: #0099e4;
+  white-space: nowrap;
+}
+
+.save-btn { background: #2ecc71; }
+.cancel-btn { background: #95a5a6; }
+
+/* 編集・削除ボタンを横に並べる */
+.action-group {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+/* アイコンボタン専用スタイル */
+.edit-btn, .delete-btn {
+  background: none !important; /* 背景を消す */
+  font-size: 1.2rem;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.edit-btn:hover { background: #fff3e0 !important; } /* 編集ホバー：薄いオレンジ */
+.delete-btn:hover { background: #ffebee !important; } /* 削除ホバー：薄い赤 */
+
+/* 完了済みテーブルのボタンも同様に調整 */
+.archive-table .done-btn {
+  background: #7f8c8d;
+}
