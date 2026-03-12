@@ -188,6 +188,7 @@ table td {
 
 /* 必要に応じて、ボタンのサイズも少し小さくするとさらに詰まります */
 table button {
-  padding: 2px 6px;
-  font-size: 0.85em;
+  padding: 4px 8px;
+  font-size: 1em;
 }
+
