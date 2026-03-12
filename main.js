@@ -112,19 +112,32 @@ new Vue({
   created() {
     firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
+    // リスナーを保存する変数を定義
+    let unsubscribe = null;
+
     firebase.auth().onAuthStateChanged(user => {
+      // 1. 古いリスナーがあれば解除する
+      if (unsubscribe) {
+        unsubscribe();
+        unsubscribe = null;
+      }
+
       this.user = user;
+
       if (user) {
-        // スター付き(true)を上にし、その次に作成日時が新しい順に取得
-        db.collection('todos')
+        // 2. 新しいユーザーでリスナーを開始し、unsubscribe に保存
+        unsubscribe = db.collection('todos')
           .where('uid', '==', user.uid)
           .orderBy('isStarred', 'desc')
           .orderBy('createdAt', 'desc')
           .onSnapshot(snapshot => {
             this.todos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             this.checkDeadlines();
+          }, (error) => {
+            console.error("Firestoreリスナーエラー:", error);
           });
       } else {
+        // 3. ログアウト時はリストを空にする
         this.todos = [];
       }
     });
