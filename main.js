@@ -20,32 +20,34 @@ new Vue({
     editComment: '',
     editDate: ''
   },
-computed: {
+  computed: {
     activeTodos() {
-      const list = this.todos.filter(item => item.state !== '完了');
-      
-      return [...list].sort((a, b) => {
-        // 1. 星の比較 (星付きを先に)
-        if (a.isStarred !== b.isStarred) {
-          return a.isStarred ? -1 : 1;
-        }
-        
-        // 2. 期限の比較用の数値を作成
-        // 期限ありならその数値、期限なしなら「非常に大きな数字」にして後ろへ回す
-        const dateA = (a.dueDate && a.dueDate !== "") ? new Date(a.dueDate).getTime() : 9999999999999;
-        const dateB = (b.dueDate && b.dueDate !== "") ? new Date(b.dueDate).getTime() : 9999999999999;
-        
-        // 3. 期限で昇順（近い順）に並べる
-        return dateA - dateB;
-      });
+      // 期限を数値化する安全な関数
+      const getDueDate = (item) => {
+        if (!item.dueDate || item.dueDate === "") return 9999999999999;
+        const d = new Date(item.dueDate).getTime();
+        return isNaN(d) ? 9999999999999 : d;
+      };
+
+      return [...this.todos]
+        .filter(item => item.state !== '完了')
+        .sort((a, b) => {
+          // 1. 星の比較 (true:星付きを先頭に)
+          if (a.isStarred !== b.isStarred) {
+            return a.isStarred ? -1 : 1;
+          }
+          // 2. 期限で昇順（近い順）に並べる
+          return getDueDate(a) - getDueDate(b);
+        });
     },
     archivedTodos() {
-      const list = this.todos.filter(item => item.state === '完了');
-      return [...list].sort((a, b) => {
-        const dateA = (a.dueDate && a.dueDate !== "") ? new Date(a.dueDate).getTime() : 0;
-        const dateB = (b.dueDate && b.dueDate !== "") ? new Date(b.dueDate).getTime() : 0;
-        return dateB - dateA;
-      });
+      return [...this.todos]
+        .filter(item => item.state === '完了')
+        .sort((a, b) => {
+          const dateA = (a.dueDate && a.dueDate !== "") ? new Date(a.dueDate).getTime() : 0;
+          const dateB = (b.dueDate && b.dueDate !== "") ? new Date(b.dueDate).getTime() : 0;
+          return dateB - dateA;
+        });
     }
   },
   
@@ -160,4 +162,3 @@ computed: {
     }
   }
 });
-
