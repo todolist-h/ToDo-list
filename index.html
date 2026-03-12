@@ -8,7 +8,7 @@
                frame-src https://*.firebaseapp.com https://accounts.google.com https://www.google.com; 
                img-src 'self' https://lh3.googleusercontent.com; 
                style-src 'self' 'unsafe-inline';">
-                 
+                  
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Todoリスト</title>
@@ -76,20 +76,32 @@
     <button type="submit">追加</button>
   </form>
 
+  <h2>進行中のタスク</h2>
   <table>
     <thead>
       <tr><th>コメント</th><th>期限</th><th>状態</th><th>-</th></tr>
     </thead>
     <tbody>
-      <tr v-for="item in todos" :key="item.id" 
-          :class="{ 
-            'done-item': item.state === '完了', 
-            'danger-item': item.state !== '完了' && isUrgent(item.dueDate) 
-          }">
+      <tr v-for="item in activeTodos" :key="item.id" 
+          :class="{ 'danger-item': isUrgent(item.dueDate) }">
         <td>{{ item.comment }}</td>
         <td>{{ item.dueDate }}</td>
-        <td><button @click="doChangeState(item)">{{ item.state }}</button></td>
+        <td><button @click="doChangeState(item)">完了にする</button></td>
         <td><button @click="doRemove(item)">削除</button></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 style="margin-top: 40px;">完了済みタスク</h2>
+  <table class="archive-table">
+    <thead>
+      <tr><th>コメント</th><th>期限</th><th>状態</th></tr>
+    </thead>
+    <tbody>
+      <tr v-for="item in archivedTodos" :key="item.id">
+        <td>{{ item.comment }}</td>
+        <td>{{ item.dueDate }}</td>
+        <td><button @click="doChangeState(item)">戻す</button></td>
       </tr>
     </tbody>
   </table>
@@ -120,11 +132,3 @@
   <script src="./main.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
