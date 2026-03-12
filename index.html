@@ -44,6 +44,17 @@
     </div>
   </div>
 
+  <div class="modal-overlay" v-if="showTerms" @click="showTerms = false">
+    <div class="modal-content" @click.stop>
+      <h2>利用規約</h2>
+      <div class="terms-text" style="text-align: left; font-size: 0.9em; height: 300px; overflow-y: auto; padding: 15px; border: 1px solid #ccc; background: #f9f9f9;">
+        <p><strong>第1条（目的）</strong><br>本利用規約は、本ToDoアプリが提供するサービスの利用条件を定めるものです。</p>
+        <p><strong>第5条（個人情報の取り扱い）</strong><br>ユーザーのデータ管理目的でのみ使用し、第三者への提供は行いません。</p>
+      </div>
+      <button @click="showTerms = false" style="margin-top: 15px; padding: 8px 20px; cursor: pointer;">閉じる</button>
+    </div>
+  </div>
+
   <h1>ToDoリスト</h1>
 
   <div v-if="user" class="user-area">
@@ -81,14 +92,12 @@
     <tbody>
       <tr v-for="item in activeTodos" :key="item.id" 
           :class="{ 'danger-item': isUrgent(item.dueDate), 'starred-item': item.isStarred }">
-        
-        <td @click="doToggleStar(item)" style="cursor:pointer; font-size: 1.2em; text-align: center;" :class="{'star-on': item.isStarred}">
+        <td @click="doToggleStar(item)" style="cursor:pointer; text-align: center;" :class="{'star-on': item.isStarred}">
           {{ item.isStarred ? '★' : '☆' }}
         </td>
-
         <td>
           <div v-if="editingId === item.id">
-            <input v-model="editComment" class="edit-input" placeholder="コメント">
+            <input v-model="editComment" class="edit-input">
             <input type="date" v-model="editDate" class="edit-input-date">
           </div>
           <div v-else>
@@ -96,7 +105,6 @@
             <div class="todo-date" v-if="item.dueDate">{{ item.dueDate }}</div>
           </div>
         </td>
-
         <td style="text-align: center;">
           <div v-if="isEditMode" class="action-group">
             <template v-if="editingId === item.id">
@@ -116,24 +124,37 @@
     </tbody>
   </table>
 
-  <h2 style="margin-top: 40px;">完了済み</h2>
+  <h2 style="margin-top: 40px;">完了済みタスク</h2>
   <table class="archive-table">
+    <thead>
+      <tr>
+        <th style="width: 40px;">★</th>
+        <th>内容</th>
+        <th>期限</th>
+        <th style="width: 80px; text-align: center;">操作</th>
+      </tr>
+    </thead>
     <tbody>
       <tr v-for="item in archivedTodos" :key="item.id">
-        <td style="width: 40px; text-align: center;">{{ item.isStarred ? '★' : '☆' }}</td>
-        <td>
-          <div class="todo-comment">{{ item.comment }}</div>
-          <div class="todo-date">{{ item.dueDate }}</div>
-        </td>
-        <td style="width: 80px; text-align: center;">
-          <button @click="doChangeState(item)" class="icon-btn">🔄</button>
-          <button v-if="isEditMode" @click="doRemove(item)" class="icon-btn">🗑️</button>
+        <td style="text-align: center;">{{ item.isStarred ? '★' : '☆' }}</td>
+        <td class="todo-comment-normal">{{ item.comment }}</td>
+        <td class="todo-date-normal">{{ item.dueDate }}</td>
+        <td style="text-align: center;">
+          <div class="action-group">
+            <button @click="doChangeState(item)" class="icon-btn">🔄</button>
+            <button @click="doRemove(item)" class="icon-btn">🗑️</button>
+          </div>
         </td>
       </tr>
     </tbody>
   </table>
 </div>
 
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    }
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
