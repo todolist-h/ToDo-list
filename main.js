@@ -81,6 +81,7 @@ new Vue({
         comment: this.newTodo,
         dueDate: this.newDate,
         state: '作業中',
+        isStarred: false, // 追加時にデフォルトでスターなしに設定
         uid: this.user.uid,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
@@ -95,10 +96,16 @@ new Vue({
       }
     },
 
-    // 8. 状態の変更（「作業中」と「完了」の切り替え）
+    // 8. 状態の変更
     doChangeState(item) {
       const newState = item.state === '作業中' ? '完了' : '作業中';
       db.collection('todos').doc(item.id).update({ state: newState });
+    },
+
+    // 9. スターの切り替え
+    doToggleStar(item) {
+      const newStarred = !item.isStarred;
+      db.collection('todos').doc(item.id).update({ isStarred: newStarred });
     }
   },
 
@@ -110,7 +117,7 @@ new Vue({
       if (user) {
         db.collection('todos')
           .where('uid', '==', user.uid)
-          .orderBy('createdAt', 'desc') // 作成日時順で取得
+          .orderBy('createdAt', 'desc')
           .onSnapshot(snapshot => {
             this.todos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             this.checkDeadlines();
