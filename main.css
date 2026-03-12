@@ -11,7 +11,7 @@ body {
 /* --- ハンバーガーメニュー --- */
 .hamburger {
   position: fixed; top: 20px; left: 20px; z-index: 100;
-  background: none; border: none; width: 55px; height: 37px; cursor: pointer;
+  background: none; border: none; width: 40px; height: 35px; cursor: pointer;
 }
 .hamburger span {
   display: block; width: 100%; height: 3px; background: #0099e4; margin-bottom: 8px; border-radius: 2px;
@@ -39,11 +39,15 @@ input:checked + .slider:before { transform: translateX(20px); }
 #app { max-width: 640px; margin: 40px auto 0; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 h1 { text-align: center; border-bottom: 3px solid #0099e4; padding-bottom: 10px; margin-bottom: 25px; }
 
-/* --- タスク詳細（スマホ最適化） --- */
+/* 進行中タスクヘッダー（編集モードトグル） */
+.list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+.edit-mode-toggle { font-size: 0.85rem; background: #f0f0f0; padding: 5px 12px; border-radius: 20px; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+
+/* --- タスク詳細 --- */
 .todo-comment { font-weight: bold; font-size: 0.95rem; }
 .todo-date { font-size: 0.75rem; color: #888; }
 
-/* --- テーブルと編集入力 --- */
+/* --- テーブル --- */
 table { width: 100%; border-collapse: collapse; }
 th, td { padding: 12px 8px; border-bottom: 1px solid #eee; }
 .edit-input { width: 100%; padding: 4px; border: 1px solid #0099e4; border-radius: 4px; margin-bottom: 4px; }
@@ -51,7 +55,7 @@ th, td { padding: 12px 8px; border-bottom: 1px solid #eee; }
 
 /* --- ボタン類 --- */
 button { border: none; border-radius: 4px; padding: 6px 12px; background: #0099e4; color: #fff; cursor: pointer; font-size: 0.85rem; }
-.done-btn { background: #0099e4; }
+.done-btn { background: #0099e4; width: 100%; }
 .icon-btn { background: none; font-size: 1.2rem; padding: 4px; }
 .action-group { display: flex; justify-content: center; gap: 5px; }
 
