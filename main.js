@@ -21,32 +21,38 @@ new Vue({
     editDate: ''
   },
   computed: {
-    // 【修正版】確実に並び替えるためのロジック
+    // 【確実な並び替えロジック】
+    // 1. 星付きが最優先
+    // 2. 期限がある場合は近い順、期限がないものは最後に回す
     activeTodos() {
-      // 1. まず配列をフィルタリング
       const list = this.todos.filter(item => item.state !== '完了');
       
-      // 2. 配列のコピーを作成してからソートする
       return [...list].sort((a, b) => {
-        // 星の比較
+        // 1. 星の比較 (true:星付きを先頭に)
         if (a.isStarred !== b.isStarred) {
           return a.isStarred ? -1 : 1;
         }
         
-        // 期限の比較
-        const dateA = a.dueDate ? new Date(a.dueDate).getTime() : null;
-        const dateB = b.dueDate ? new Date(b.dueDate).getTime() : null;
+        // 2. 期限の比較
+        const dateA = (a.dueDate && a.dueDate !== "") ? new Date(a.dueDate).getTime() : null;
+        const dateB = (b.dueDate && b.dueDate !== "") ? new Date(b.dueDate).getTime() : null;
         
-        if (!dateA && !dateB) return 0;
-        if (!dateA) return 1;
-        if (!dateB) return -1;
+        // 両方期限なしなら順序そのまま
+        if (dateA === null && dateB === null) return 0;
+        // 期限なしは常に後ろへ
+        if (dateA === null) return 1;
+        if (dateB === null) return -1;
+        
+        // 両方期限ありなら近い順（昇順）
         return dateA - dateB;
       });
     },
     archivedTodos() {
       const list = this.todos.filter(item => item.state === '完了');
       return [...list].sort((a, b) => {
-        return new Date(b.dueDate || 0) - new Date(a.dueDate || 0);
+        const dateA = (a.dueDate && a.dueDate !== "") ? new Date(a.dueDate).getTime() : 0;
+        const dateB = (b.dueDate && b.dueDate !== "") ? new Date(b.dueDate).getTime() : 0;
+        return dateB - dateA; // 完了済みは新しい順
       });
     }
   },
@@ -59,12 +65,12 @@ new Vue({
       firebase.auth().signOut();
     },
     isUrgent(dueDate) {
-      if (!dueDate) return false;
+      if (!dueDate || dueDate === "") return false;
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const targetDate = new Date(dueDate);
       targetDate.setHours(0, 0, 0, 0);
-      return targetDate <= today;
+      return targetDate.getTime() <= today.getTime();
     },
     toggleNotification() {
       localStorage.setItem('notify', this.notificationEnabled);
@@ -148,7 +154,6 @@ new Vue({
       if (user) {
         db.collection('todos').where('uid', '==', user.uid)
           .onSnapshot(snapshot => {
-            // Firestoreのデータを配列へ変換
             this.todos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             this.checkDeadlines();
           });
