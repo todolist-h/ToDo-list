@@ -79,38 +79,45 @@
     <thead>
       <tr><th>★</th><th>コメント</th><th>期限</th><th>操作</th><th>-</th></tr>
     </thead>
-    <tbody>
-      <tr v-for="item in activeTodos" :key="item.id" 
-          :class="{ 'danger-item': isUrgent(item.dueDate), 'starred-item': item.isStarred }">
-        
-        <td @click="doToggleStar(item)" style="cursor:pointer; font-size: 1.2em;" :class="{'star-on': item.isStarred}">
-          {{ item.isStarred ? '★' : '☆' }}
-        </td>
+<tbody>
+  <tr v-for="item in activeTodos" :key="item.id" 
+      :class="{ 'danger-item': isUrgent(item.dueDate), 'starred-item': item.isStarred }">
+    
+    <td @click="doToggleStar(item)" style="cursor:pointer; font-size: 1.2em;" :class="{'star-on': item.isStarred}">
+      {{ item.isStarred ? '★' : '☆' }}
+    </td>
 
-        <td>
-          <input v-if="editingId === item.id" v-model="editComment" class="edit-input">
-          <span v-else>{{ item.comment }}</span>
-        </td>
+    <td>
+      <input v-if="editingId === item.id" v-model="editComment" class="edit-input">
+      <span v-else>{{ item.comment }}</span>
+    </td>
 
-        <td>
-          <input v-if="editingId === item.id" type="date" v-model="editDate" class="edit-input-date">
-          <span v-else>{{ item.dueDate }}</span>
-        </td>
+    <td>
+      <input v-if="editingId === item.id" type="date" v-model="editDate" class="edit-input-date">
+      <span v-else>{{ item.dueDate }}</span>
+    </td>
 
-        <td>
-          <div v-if="editingId === item.id" class="edit-buttons">
-            <button @click="doUpdate(item)" style="background: #2ecc71;">保存</button>
-            <button @click="cancelEdit" style="background: #95a5a6;">取消</button>
-          </div>
-          <div v-else class="action-buttons">
-            <button @click="doChangeState(item)">完了</button>
-            <button @click="startEdit(item)" style="background: #f39c12;">編集</button>
-          </div>
-        </td>
+    <td>
+      <div v-if="editingId === item.id">
+        <button @click="doUpdate(item)" class="save-btn">保存</button>
+      </div>
+      <button v-else @click="doChangeState(item)" class="done-btn">完了</button>
+    </td>
 
-        <td><button @click="doRemove(item)">削除</button></td>
-      </tr>
-    </tbody>
+    <td>
+      <div class="action-group">
+        <template v-if="editingId === item.id">
+          <button @click="cancelEdit" class="cancel-btn">✕</button>
+        </template>
+        <template v-else>
+          <button @click="startEdit(item)" class="edit-btn" title="編集">✏️</button>
+          <button @click="doRemove(item)" class="delete-btn" title="削除">🗑️</button>
+        </template>
+      </div>
+    </td>
+  </tr>
+</tbody>
+    
   </table>
 
   <h2 style="margin-top: 40px;">完了済みタスク</h2>
@@ -148,3 +155,4 @@
   <script src="./main.js"></script>
 </body>
 </html>
+
