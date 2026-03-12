@@ -20,30 +20,22 @@ new Vue({
     editComment: '',
     editDate: ''
   },
-  computed: {
-    // 【確実な並び替えロジック】
-    // 1. 星付きが最優先
-    // 2. 期限がある場合は近い順、期限がないものは最後に回す
+computed: {
     activeTodos() {
       const list = this.todos.filter(item => item.state !== '完了');
       
       return [...list].sort((a, b) => {
-        // 1. 星の比較 (true:星付きを先頭に)
+        // 1. 星の比較 (星付きを先に)
         if (a.isStarred !== b.isStarred) {
           return a.isStarred ? -1 : 1;
         }
         
-        // 2. 期限の比較
-        const dateA = (a.dueDate && a.dueDate !== "") ? new Date(a.dueDate).getTime() : null;
-        const dateB = (b.dueDate && b.dueDate !== "") ? new Date(b.dueDate).getTime() : null;
+        // 2. 期限の比較用の数値を作成
+        // 期限ありならその数値、期限なしなら「非常に大きな数字」にして後ろへ回す
+        const dateA = (a.dueDate && a.dueDate !== "") ? new Date(a.dueDate).getTime() : 9999999999999;
+        const dateB = (b.dueDate && b.dueDate !== "") ? new Date(b.dueDate).getTime() : 9999999999999;
         
-        // 両方期限なしなら順序そのまま
-        if (dateA === null && dateB === null) return 0;
-        // 期限なしは常に後ろへ
-        if (dateA === null) return 1;
-        if (dateB === null) return -1;
-        
-        // 両方期限ありなら近い順（昇順）
+        // 3. 期限で昇順（近い順）に並べる
         return dateA - dateB;
       });
     },
@@ -52,10 +44,11 @@ new Vue({
       return [...list].sort((a, b) => {
         const dateA = (a.dueDate && a.dueDate !== "") ? new Date(a.dueDate).getTime() : 0;
         const dateB = (b.dueDate && b.dueDate !== "") ? new Date(b.dueDate).getTime() : 0;
-        return dateB - dateA; // 完了済みは新しい順
+        return dateB - dateA;
       });
     }
   },
+  
   methods: {
     login() {
       const provider = new firebase.auth.GoogleAuthProvider();
@@ -167,3 +160,4 @@ new Vue({
     }
   }
 });
+
