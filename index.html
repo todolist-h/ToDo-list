@@ -25,6 +25,15 @@
   <div class="menu-overlay" v-if="isMenuOpen" @click="isMenuOpen = false"></div>
   <div class="side-menu" :class="{ 'is-open': isMenuOpen }">
     <h2>設定</h2>
+    
+    <div class="menu-item">
+      <span>編集モード</span>
+      <label class="switch">
+        <input type="checkbox" v-model="isEditMode" @change="toggleEditMode">
+        <span class="slider"></span>
+      </label>
+    </div>
+
     <div class="menu-item">
       <span>期限通知</span>
       <label class="switch">
@@ -39,6 +48,7 @@
         <span class="slider"></span>
       </label>
     </div>
+    
     <div class="menu-item" style="margin-top: 30px;">
       <button @click="showTerms = true" style="cursor:pointer;">利用規約を表示</button>
     </div>
@@ -48,8 +58,8 @@
     <div class="modal-content" @click.stop>
       <h2>利用規約</h2>
       <div class="terms-text" style="text-align: left; font-size: 0.9em; height: 300px; overflow-y: auto; padding: 15px; border: 1px solid #ccc; background: #f9f9f9;">
-        <p><strong>第1条（目的）</strong><br>本利用規約は、本アプリの利用条件を定めるものです。</p>
-        <p>（以下、省略...）</p>
+        <p><strong>第1条（目的）</strong><br>本ToDoアプリの利用条件を定めるものです。</p>
+        <p>（第2条以降省略）</p>
       </div>
       <button @click="showTerms = false" style="margin-top: 15px; padding: 8px 20px;">閉じる</button>
     </div>
@@ -69,69 +79,71 @@
   </div>
     
   <form class="add-form" @submit.prevent="doAdd">
-    <input type="text" v-model="newTodo" placeholder="タスクを入力">
+    <input type="text" v-model="newTodo" placeholder="新しいタスクを入力">
     <input type="date" v-model="newDate">
     <button type="submit">追加</button>
   </form>
 
-  <h2>進行中のタスク</h2>
+  <h2>進行中のタスク <small v-if="isEditMode" style="color: #f39c12; font-size: 0.6em;">（編集モード中）</small></h2>
   <table>
     <thead>
-      <tr><th>★</th><th>コメント</th><th>期限</th><th>操作</th><th>-</th></tr>
-    </thead>
-<tbody>
-  <tr v-for="item in activeTodos" :key="item.id" 
-      :class="{ 'danger-item': isUrgent(item.dueDate), 'starred-item': item.isStarred }">
-    
-    <td @click="doToggleStar(item)" style="cursor:pointer; font-size: 1.2em;" :class="{'star-on': item.isStarred}">
-      {{ item.isStarred ? '★' : '☆' }}
-    </td>
-
-    <td>
-      <input v-if="editingId === item.id" v-model="editComment" class="edit-input">
-      <span v-else>{{ item.comment }}</span>
-    </td>
-
-    <td>
-      <input v-if="editingId === item.id" type="date" v-model="editDate" class="edit-input-date">
-      <span v-else>{{ item.dueDate }}</span>
-    </td>
-
-    <td>
-      <div v-if="editingId === item.id">
-        <button @click="doUpdate(item)" class="save-btn">保存</button>
-      </div>
-      <button v-else @click="doChangeState(item)" class="done-btn"> 完了 </button>
-    </td>
-
-    <td>
-      <div class="action-group">
-        <template v-if="editingId === item.id">
-          <button @click="cancelEdit" class="cancel-btn">✕</button>
-        </template>
-        <template v-else>
-          <button @click="startEdit(item)" class="edit-btn" title="編集">✏️</button>
-          <button @click="doRemove(item)" class="delete-btn" title="削除">🗑️</button>
-        </template>
-      </div>
-    </td>
-  </tr>
-</tbody>
-    
-  </table>
-
-  <h2 style="margin-top: 40px;">完了済みタスク</h2>
-  <table class="archive-table">
-    <thead>
-      <tr><th>★</th><th>コメント</th><th>期限</th><th>操作</th><th>-</th></tr>
+      <tr>
+        <th style="width: 40px;">★</th>
+        <th>内容 / 期限</th>
+        <th style="width: 80px; text-align: center;">操作</th>
+      </tr>
     </thead>
     <tbody>
+      <tr v-for="item in activeTodos" :key="item.id" 
+          :class="{ 'danger-item': isUrgent(item.dueDate), 'starred-item': item.isStarred }">
+        
+        <td @click="doToggleStar(item)" style="cursor:pointer; font-size: 1.2em; text-align: center;" :class="{'star-on': item.isStarred}">
+          {{ item.isStarred ? '★' : '☆' }}
+        </td>
+
+        <td>
+          <div v-if="editingId === item.id">
+            <input v-model="editComment" class="edit-input" placeholder="コメント">
+            <input type="date" v-model="editDate" class="edit-input-date">
+          </div>
+          <div v-else>
+            <div class="todo-comment">{{ item.comment }}</div>
+            <div class="todo-date" v-if="item.dueDate">{{ item.dueDate }}</div>
+          </div>
+        </td>
+
+        <td style="text-align: center;">
+          <div v-if="isEditMode" class="action-group">
+            <template v-if="editingId === item.id">
+              <button @click="doUpdate(item)" class="icon-btn save">✅</button>
+              <button @click="cancelEdit" class="icon-btn cancel">✕</button>
+            </template>
+            <template v-else>
+              <button @click="startEdit(item)" class="icon-btn">✏️</button>
+              <button @click="doRemove(item)" class="icon-btn">🗑️</button>
+            </template>
+          </div>
+          <div v-else>
+            <button @click="doChangeState(item)" class="done-btn">完了</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 style="margin-top: 40px;">完了済み</h2>
+  <table class="archive-table">
+    <tbody>
       <tr v-for="item in archivedTodos" :key="item.id">
-        <td @click="doToggleStar(item)" style="cursor:pointer;">{{ item.isStarred ? '★' : '☆' }}</td>
-        <td>{{ item.comment }}</td>
-        <td>{{ item.dueDate }}</td>
-        <td><button @click="doChangeState(item)">戻す</button></td>
-        <td><button @click="doRemove(item)">削除</button></td>
+        <td style="width: 40px; text-align: center;">{{ item.isStarred ? '★' : '☆' }}</td>
+        <td>
+          <div class="todo-comment">{{ item.comment }}</div>
+          <div class="todo-date">{{ item.dueDate }}</div>
+        </td>
+        <td style="width: 80px; text-align: center;">
+          <button @click="doChangeState(item)" class="icon-btn">🔄</button>
+          <button v-if="isEditMode" @click="doRemove(item)" class="icon-btn">🗑️</button>
+        </td>
       </tr>
     </tbody>
   </table>
@@ -155,5 +167,3 @@
   <script src="./main.js"></script>
 </body>
 </html>
-
-
