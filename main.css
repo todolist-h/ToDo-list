@@ -170,3 +170,16 @@ td:last-child button { background: #e74c3c; }
 .archive-table .done-btn {
   background: #7f8c8d;
 }
+
+/* 内容と期限を縦に並べることで横幅を確保 */
+td small {
+  display: block;
+  font-size: 0.75rem;
+  margin-top: 2px;
+}
+
+/* 編集モード時のアクションボタンをコンパクトに */
+.action-group {
+  display: flex;
+  gap: 10px;
+}
