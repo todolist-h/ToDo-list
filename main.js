@@ -9,17 +9,21 @@ new Vue({
     user: null,
     isMenuOpen: false,
     showTerms: false,
-    // 通知設定の読み込み
+    // 設定関連
     notificationEnabled: localStorage.getItem('notify') === 'true',
-    // エフェクト設定の読み込み（保存されていない場合はデフォルトで true）
-    effectEnabled: localStorage.getItem('effect') !== 'false'
+    effectEnabled: localStorage.getItem('effect') !== 'false',
+    
+    // 編集機能用のデータ
+    editingId: null,      // 現在編集中のタスクのID（nullなら通常モード）
+    editComment: '',      // 編集用の一時的なテキスト
+    editDate: ''          // 編集用の一時的な日付
   },
   computed: {
     // 進行中のタスクをフィルタリング
     activeTodos() {
       return this.todos.filter(item => item.state !== '完了');
     },
-    // 完了済みのタスク（アーカイブ）をフィルタリング
+    // 完了済みのタスクをフィルタリング
     archivedTodos() {
       return this.todos.filter(item => item.state === '完了');
     }
@@ -36,7 +40,7 @@ new Vue({
       firebase.auth().signOut();
     },
 
-    // 3. 期限が今日以前かチェックする
+    // 3. 期限チェック
     isUrgent(dueDate) {
       if (!dueDate) return false;
       const today = new Date();
@@ -46,30 +50,27 @@ new Vue({
       return targetDate <= today;
     },
 
-    // 4. 通知スイッチの切り替え処理
+    // 4. 通知設定保存
     toggleNotification() {
       localStorage.setItem('notify', this.notificationEnabled);
-      
       if (this.notificationEnabled && Notification.permission !== 'granted') {
         Notification.requestPermission();
       }
     },
 
-    // 5. エフェクトスイッチの切り替え処理
+    // 5. エフェクト設定保存
     toggleEffect() {
       localStorage.setItem('effect', this.effectEnabled);
     },
 
-    // 6. 期限切れタスクをチェック
+    // 6. 期限切れ通知実行
     checkDeadlines() {
       if (!this.notificationEnabled) return;
-
       const todayStr = new Date().toISOString().split('T')[0];
       const urgentTasks = this.todos.filter(t => t.state !== '完了' && t.dueDate === todayStr);
 
       if (urgentTasks.length > 0 && Notification.permission === 'granted') {
         const taskList = urgentTasks.map(t => `・${t.comment}`).join('\n');
-        
         new Notification("今日のToDo", {
           body: `期限のタスクが ${urgentTasks.length} 件あります！\n\n${taskList}`
         });
@@ -79,7 +80,7 @@ new Vue({
     // 7. タスクの追加
     doAdd() {
       if (!this.user) {
-        alert('タスクを追加するには、まずGoogleでログインしてください。');
+        alert('ログインしてください');
         return;
       }
       if (!this.newTodo) return;
@@ -103,11 +104,10 @@ new Vue({
       }
     },
 
-    // 9. 状態の変更
+    // 9. 状態の変更（完了/戻す）
     doChangeState(item) {
       const newState = item.state === '作業中' ? '完了' : '作業中';
       
-      // 作業中から完了になった時、かつ設定がオンならエフェクトを実行
       if (newState === '完了' && this.effectEnabled) {
         this.runConfetti();
       }
@@ -121,9 +121,37 @@ new Vue({
       db.collection('todos').doc(item.id).update({ isStarred: newStarred });
     },
 
-    // 11. 紙吹雪エフェクトの実行
+    // 11. 編集開始
+    startEdit(item) {
+      this.editingId = item.id;
+      this.editComment = item.comment;
+      this.editDate = item.dueDate;
+    },
+
+    // 12. 編集キャンセル
+    cancelEdit() {
+      this.editingId = null;
+      this.editComment = '';
+      this.editDate = '';
+    },
+
+    // 13. データの更新保存
+    doUpdate(item) {
+      if (!this.editComment) return;
+      
+      db.collection('todos').doc(item.id).update({
+        comment: this.editComment,
+        dueDate: this.editDate
+      }).then(() => {
+        this.editingId = null; // 編集モード終了
+      }).catch(error => {
+        console.error("更新エラー:", error);
+        alert("保存に失敗しました。");
+      });
+    },
+
+    // 14. 紙吹雪演出
     runConfetti() {
-      // ライブラリが読み込まれているか確認
       if (typeof confetti === 'function') {
         confetti({
           particleCount: 150,
@@ -141,6 +169,7 @@ new Vue({
     let unsubscribe = null;
 
     firebase.auth().onAuthStateChanged(user => {
+      // 認証状態が変わったら以前のリスナーを解除
       if (unsubscribe) {
         unsubscribe();
         unsubscribe = null;
@@ -149,6 +178,7 @@ new Vue({
       this.user = user;
 
       if (user) {
+        // ログイン時：Firestoreのリアルタイム監視を開始
         unsubscribe = db.collection('todos')
           .where('uid', '==', user.uid)
           .orderBy('isStarred', 'desc')
@@ -160,6 +190,7 @@ new Vue({
             console.error("Firestoreリスナーエラー:", error);
           });
       } else {
+        // ログアウト時
         this.todos = [];
       }
     });
