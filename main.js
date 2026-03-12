@@ -115,8 +115,10 @@ new Vue({
     firebase.auth().onAuthStateChanged(user => {
       this.user = user;
       if (user) {
+        // スター付き(true)を上にし、その次に作成日時が新しい順に取得
         db.collection('todos')
           .where('uid', '==', user.uid)
+          .orderBy('isStarred', 'desc')
           .orderBy('createdAt', 'desc')
           .onSnapshot(snapshot => {
             this.todos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
