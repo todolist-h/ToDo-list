@@ -8,17 +8,15 @@ body {
     padding: 20px;
 }
 
-/* --- ハンバーガーボタン --- */
+/* --- ハンバーガーメニュー --- */
 .hamburger {
   position: fixed; top: 20px; left: 20px; z-index: 100;
   background: none; border: none; width: 55px; height: 37px; cursor: pointer;
 }
 .hamburger span {
-  display: block; width: 100%; height: 3px;
-  background: #0099e4; margin-bottom: 8px; border-radius: 2px;
+  display: block; width: 100%; height: 3px; background: #0099e4; margin-bottom: 8px; border-radius: 2px;
 }
 
-/* --- サイドメニュー --- */
 .side-menu {
   position: fixed; top: 0; left: -250px; width: 250px; height: 100%;
   background: white; z-index: 101; padding: 25px 20px;
@@ -26,160 +24,52 @@ body {
   transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 .side-menu.is-open { left: 0; }
-.menu-overlay {
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0,0,0,0.3); z-index: 100;
-}
+.menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); z-index: 100; }
+.menu-item { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; }
 
 /* --- スイッチ --- */
-.menu-item { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; }
 .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
 .switch input { opacity: 0; width: 0; height: 0; }
-.slider {
-  position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-  background-color: #ccc; transition: .4s; border-radius: 20px;
-}
-.slider:before {
-  position: absolute; content: ""; height: 16px; width: 16px;
-  left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%;
-}
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 20px; }
+.slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; }
 input:checked + .slider { background-color: #0099e4; }
 input:checked + .slider:before { transform: translateX(20px); }
 
 /* --- メインコンテンツ --- */
-#app {
-    max-width: 640px;
-    margin: 40px auto 0;
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
+#app { max-width: 640px; margin: 40px auto 0; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+h1 { text-align: center; border-bottom: 3px solid #0099e4; padding-bottom: 10px; margin-bottom: 25px; }
 
-h1 { 
-    text-align: center; border-bottom: 3px solid #0099e4; 
-    padding-bottom: 10px; margin-bottom: 25px;
-}
+/* --- タスク詳細（スマホ最適化） --- */
+.todo-comment { font-weight: bold; font-size: 0.95rem; }
+.todo-date { font-size: 0.75rem; color: #888; }
 
-/* --- フォーム --- */
-.add-form { 
-    background-color: #f9f9f9; padding: 15px; border-radius: 8px; 
-    margin-bottom: 20px; border: 1px solid #eee;
-    display: flex; gap: 10px; flex-wrap: wrap;
-}
-.add-form input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; flex: 1; }
-
-/* --- テーブル --- */
+/* --- テーブルと編集入力 --- */
 table { width: 100%; border-collapse: collapse; }
-thead th { border-bottom: 2px solid #0099e4; color: #0099e4; text-align: left; padding: 12px 8px; }
 th, td { padding: 12px 8px; border-bottom: 1px solid #eee; }
+.edit-input { width: 100%; padding: 4px; border: 1px solid #0099e4; border-radius: 4px; margin-bottom: 4px; }
+.edit-input-date { width: 100%; padding: 4px; border: 1px solid #0099e4; border-radius: 4px; }
 
-/* --- 編集モードのスタイル --- */
-.edit-input {
-  width: 100%;
-  padding: 6px;
-  border: 1px solid #0099e4;
-  border-radius: 4px;
-  font-size: 0.9rem;
-}
-.edit-input-date {
-  width: 130px;
-  padding: 4px;
-  border: 1px solid #0099e4;
-  border-radius: 4px;
-}
-.edit-buttons, .action-buttons {
-  display: flex;
-  gap: 5px;
-}
+/* --- ボタン類 --- */
+button { border: none; border-radius: 4px; padding: 6px 12px; background: #0099e4; color: #fff; cursor: pointer; font-size: 0.85rem; }
+.done-btn { background: #0099e4; }
+.icon-btn { background: none; font-size: 1.2rem; padding: 4px; }
+.action-group { display: flex; justify-content: center; gap: 5px; }
 
-/* --- 特殊な行状態 --- */
+/* 特殊状態 */
 .starred-item td { background-color: #fff9c4 !important; }
 .star-on { color: #ffcc00; }
 .danger-item td { background-color: #fff0f0 !important; color: #d9534f; font-weight: bold; }
-.archive-table { opacity: 0.8; }
+.archive-table { opacity: 0.7; }
 
 /* --- ユーザーエリア --- */
 .user-area { display: flex; justify-content: flex-end; margin-bottom: 20px; }
-.user-card {
-    background-color: #f0f0f0; padding: 8px 15px; border-radius: 50px;
-    display: flex; align-items: center; gap: 10px;
-}
+.user-card { background-color: #f0f0f0; padding: 8px 15px; border-radius: 50px; display: flex; align-items: center; gap: 10px; }
 .user-icon { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; }
-
-/* --- ボタン --- */
-button {
-    border: none; border-radius: 4px; padding: 6px 12px;
-    background: #0099e4; color: #fff; cursor: pointer; font-size: 0.85rem;
-}
-button:hover { opacity: 0.8; }
-
-/* 削除ボタン */
-td:last-child button { background: #e74c3c; }
-
-/* ログアウト */
 .logout-button { background: #999 !important; padding: 3px 8px; font-size: 0.75rem; }
-
-/* --- モーダル --- */
-.modal-overlay {
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0,0,0,0.5); z-index: 200;
-  display: flex; justify-content: center; align-items: center;
-}
-.modal-content {
-  background: white; padding: 25px; border-radius: 8px;
-  width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto;
-}
 
 /* --- スマホ対応 --- */
 @media (max-width: 480px) {
     #app { margin-top: 50px; padding: 10px; }
     .add-form { flex-direction: column; }
-    th, td { font-size: 0.75rem; padding: 8px 4px; }
-    .edit-input-date { width: 100%; }
-}
-/* ボタンの基本スタイルを少し調整 */
-.done-btn {
-  background: #0099e4;
-  white-space: nowrap;
-}
-
-.save-btn { background: #2ecc71; }
-.cancel-btn { background: #95a5a6; }
-
-/* 編集・削除ボタンを横に並べる */
-.action-group {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-}
-
-/* アイコンボタン専用スタイル */
-.edit-btn, .delete-btn {
-  background: none !important; /* 背景を消す */
-  font-size: 1.2rem;
-  padding: 4px;
-  border-radius: 4px;
-  transition: background 0.2s;
-}
-
-.edit-btn:hover { background: #fff3e0 !important; } /* 編集ホバー：薄いオレンジ */
-.delete-btn:hover { background: #ffebee !important; } /* 削除ホバー：薄い赤 */
-
-/* 完了済みテーブルのボタンも同様に調整 */
-.archive-table .done-btn {
-  background: #7f8c8d;
-}
-
-/* 内容と期限を縦に並べることで横幅を確保 */
-td small {
-  display: block;
-  font-size: 0.75rem;
-  margin-top: 2px;
-}
-
-/* 編集モード時のアクションボタンをコンパクトに */
-.action-group {
-  display: flex;
-  gap: 10px;
+    .add-form input { width: 100%; }
 }
