@@ -21,34 +21,33 @@ new Vue({
     editDate: ''
   },
   computed: {
-    // 【重要】並び替えロジック
-    // 1. 星付き(isStarred: true)を先頭にする
-    // 2. 星が同じなら、期限(dueDate)が近い順にする
+    // 【修正版】確実に並び替えるためのロジック
     activeTodos() {
-      return this.todos
-        .filter(item => item.state !== '完了')
-        .sort((a, b) => {
-          // 1. 星の比較
-          if (a.isStarred !== b.isStarred) {
-            return a.isStarred ? -1 : 1;
-          }
-          
-          // 2. 星が同じなら期限の比較
-          const dateA = a.dueDate ? new Date(a.dueDate).getTime() : null;
-          const dateB = b.dueDate ? new Date(b.dueDate).getTime() : null;
-          
-          if (!dateA && !dateB) return 0;
-          if (!dateA) return 1;  // 期限なしは後ろへ
-          if (!dateB) return -1;
-          return dateA - dateB;  // 期限の昇順
-        });
+      // 1. まず配列をフィルタリング
+      const list = this.todos.filter(item => item.state !== '完了');
+      
+      // 2. 配列のコピーを作成してからソートする
+      return [...list].sort((a, b) => {
+        // 星の比較
+        if (a.isStarred !== b.isStarred) {
+          return a.isStarred ? -1 : 1;
+        }
+        
+        // 期限の比較
+        const dateA = a.dueDate ? new Date(a.dueDate).getTime() : null;
+        const dateB = b.dueDate ? new Date(b.dueDate).getTime() : null;
+        
+        if (!dateA && !dateB) return 0;
+        if (!dateA) return 1;
+        if (!dateB) return -1;
+        return dateA - dateB;
+      });
     },
     archivedTodos() {
-      return this.todos
-        .filter(item => item.state === '完了')
-        .sort((a, b) => {
-          return new Date(b.dueDate || 0) - new Date(a.dueDate || 0);
-        });
+      const list = this.todos.filter(item => item.state === '完了');
+      return [...list].sort((a, b) => {
+        return new Date(b.dueDate || 0) - new Date(a.dueDate || 0);
+      });
     }
   },
   methods: {
@@ -98,7 +97,7 @@ new Vue({
       
       db.collection('todos').add({
         comment: this.newTodo,
-        dueDate: this.newDate || null, // nullで保存してソートを安定させる
+        dueDate: this.newDate || null,
         state: '作業中',
         isStarred: false,
         uid: this.user.uid,
@@ -149,6 +148,7 @@ new Vue({
       if (user) {
         db.collection('todos').where('uid', '==', user.uid)
           .onSnapshot(snapshot => {
+            // Firestoreのデータを配列へ変換
             this.todos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             this.checkDeadlines();
           });
