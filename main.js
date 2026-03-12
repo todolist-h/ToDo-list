@@ -9,8 +9,10 @@ new Vue({
     user: null,
     isMenuOpen: false,
     showTerms: false,
-    // localStorageから設定を読み込む
-    notificationEnabled: localStorage.getItem('notify') === 'true'
+    // 通知設定の読み込み
+    notificationEnabled: localStorage.getItem('notify') === 'true',
+    // エフェクト設定の読み込み（保存されていない場合はデフォルトで true）
+    effectEnabled: localStorage.getItem('effect') !== 'false'
   },
   computed: {
     // 進行中のタスクをフィルタリング
@@ -53,7 +55,12 @@ new Vue({
       }
     },
 
-    // 5. 期限切れタスクをチェック
+    // 5. エフェクトスイッチの切り替え処理
+    toggleEffect() {
+      localStorage.setItem('effect', this.effectEnabled);
+    },
+
+    // 6. 期限切れタスクをチェック
     checkDeadlines() {
       if (!this.notificationEnabled) return;
 
@@ -69,7 +76,7 @@ new Vue({
       }
     },
 
-    // 6. タスクの追加
+    // 7. タスクの追加
     doAdd() {
       if (!this.user) {
         alert('タスクを追加するには、まずGoogleでログインしてください。');
@@ -81,7 +88,7 @@ new Vue({
         comment: this.newTodo,
         dueDate: this.newDate,
         state: '作業中',
-        isStarred: false, // 追加時にデフォルトでスターなしに設定
+        isStarred: false,
         uid: this.user.uid,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
@@ -89,34 +96,51 @@ new Vue({
       this.newDate = '';
     },
 
-    // 7. タスクの削除
+    // 8. タスクの削除
     doRemove(item) {
       if (confirm('本当に削除しますか？')) {
         db.collection('todos').doc(item.id).delete();
       }
     },
 
-    // 8. 状態の変更
+    // 9. 状態の変更
     doChangeState(item) {
       const newState = item.state === '作業中' ? '完了' : '作業中';
+      
+      // 作業中から完了になった時、かつ設定がオンならエフェクトを実行
+      if (newState === '完了' && this.effectEnabled) {
+        this.runConfetti();
+      }
+
       db.collection('todos').doc(item.id).update({ state: newState });
     },
 
-    // 9. スターの切り替え
+    // 10. スターの切り替え
     doToggleStar(item) {
       const newStarred = !item.isStarred;
       db.collection('todos').doc(item.id).update({ isStarred: newStarred });
+    },
+
+    // 11. 紙吹雪エフェクトの実行
+    runConfetti() {
+      // ライブラリが読み込まれているか確認
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 150,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ['#ffeb3b', '#ff9800', '#f44336', '#e91e63', '#9c27b0']
+        });
+      }
     }
   },
 
   created() {
     firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
-    // リスナーを保存する変数を定義
     let unsubscribe = null;
 
     firebase.auth().onAuthStateChanged(user => {
-      // 1. 古いリスナーがあれば解除する
       if (unsubscribe) {
         unsubscribe();
         unsubscribe = null;
@@ -125,7 +149,6 @@ new Vue({
       this.user = user;
 
       if (user) {
-        // 2. 新しいユーザーでリスナーを開始し、unsubscribe に保存
         unsubscribe = db.collection('todos')
           .where('uid', '==', user.uid)
           .orderBy('isStarred', 'desc')
@@ -137,7 +160,6 @@ new Vue({
             console.error("Firestoreリスナーエラー:", error);
           });
       } else {
-        // 3. ログアウト時はリストを空にする
         this.todos = [];
       }
     });
